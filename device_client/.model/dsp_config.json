@@ -1,0 +1,30 @@
+{
+  "dsp_blocks": [
+    {
+      "type": "image",
+      "name": "Image",
+      "params": {
+        "image_width": 96,
+        "image_height": 96,
+        "grayscale": false,
+        "resize_mode": "Fit shortest axis"
+      }
+    }
+  ],
+  "input_shape": [
+    96,
+    96,
+    3
+  ],
+  "label_names": [
+    "cat",
+    "dog"
+  ],
+  "architecture": "fomo_mobilenetv2_0_1",
+  "output_type": "detection_heatmap",
+  "normalize_input": true,
+  "channel_order": "rgb",
+  "model_type": "detection_heatmap",
+  "version": 1,
+  "device_profile": "raspberry_pi_4"
+}

@@ -1,0 +1,28 @@
+[Unit]
+Description=Petal Edge Device Client
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=petal
+WorkingDirectory=/opt/petal/device_client
+ExecStart=/opt/petal/venv/bin/python /opt/petal/device_client/client.py
+Restart=on-failure
+RestartSec=10
+
+# Configuration is read from /opt/petal/device_client/config.json, written by
+# provision.py (host + api_key + device_id, chmod 600). No secrets are baked
+# into this unit.
+#
+# Optional env-only hosts (no config.json): drop a chmod-600 .env beside the
+# client with PETAL_* vars and uncomment the line below. An env var of the same
+# name overrides config.json.
+# EnvironmentFile=/opt/petal/device_client/.env
+
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=petal-device
+
+[Install]
+WantedBy=multi-user.target

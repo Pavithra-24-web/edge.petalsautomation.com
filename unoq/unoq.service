@@ -1,0 +1,38 @@
+[Unit]
+Description=Petal Edge UNO Q Runtime Daemon
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=unoq
+WorkingDirectory=/opt/petal/unoq
+ExecStart=/opt/petal/venv/bin/python /opt/petal/unoq/runtime.py
+Restart=on-failure
+RestartSec=10
+
+# --- Required ---
+Environment=PETAL_HOST=http://192.168.1.22:8010
+Environment=PETAL_API_KEY=ef_changeme_replace_with_real_key
+Environment=PETAL_DEVICE_ID=unoq-001
+Environment=PETAL_FIRMWARE=1.0.0
+
+# --- Needed for device_profile PATCH (login) ---
+Environment=PETAL_USER_EMAIL=you@example.com
+Environment=PETAL_USER_PASS=yourpassword
+
+# --- Optional: path to a static test image for image-model inference ---
+# Environment=UNOQ_TEST_IMAGE=/home/unoq/test.jpg
+
+# --- Optional: camera index if OpenCV is installed ---
+# Environment=UNOQ_CAMERA_INDEX=0
+
+# --- Package install directory ---
+Environment=PETAL_PACKAGE_DIR=/opt/petal/packages
+
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=unoq-runtime
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,31 @@
+# Petal Edge device client — Python dependencies
+#
+# Install into the deployment venv:
+#     /opt/petal/venv/bin/pip install -r requirements.txt
+# (install.sh does this for you.)
+
+# ── Minimum: WS device client (client.py) — online presence, sampling, OTA ────
+aiohttp>=3.9
+
+# ── Real backend-DSP inference (client.py inference mode) ─────────────────────
+# client.py imports backend/app/ml/dsp/processor.py to get exact feature parity
+# with training. That import needs numpy + scipy. Real inference ALSO requires
+# the backend/ package to be importable (PYTHONPATH); without it the client runs
+# fine in simulation mode and simply skips real inference.
+numpy>=1.24
+scipy>=1.10
+
+# ── MCU serial data forwarder (forwarder.py) ──────────────────────────────────
+# Only needed to read sensor rows from a real serial port. --dry-run / --stdin
+# work without it.
+pyserial>=3.5
+
+# ── Optional hardware extras (uncomment on a real Pi with the sensor attached) ─
+# Real IMU capture over I2C (MPU-6050 / LSM6DS via smbus2):
+# smbus2>=0.4
+# Pi camera snapshot / image-model capture (picamera2 pulls in libcamera):
+# picamera2>=0.3
+# Synthetic snapshot fallback + image resizing (used when no camera present):
+# Pillow>=10.0
+# Runtime health metrics in the heartbeat (falls back to /proc without it):
+# psutil>=5.9

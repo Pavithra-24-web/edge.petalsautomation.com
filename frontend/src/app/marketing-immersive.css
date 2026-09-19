@@ -1,0 +1,717 @@
+/* ===========================================================================
+   HeroImmersive — isolated `.phi-` namespace.
+
+   Nothing here targets .pe-hero-*, .pe-orbit-* or .pe-node-* structurally; it
+   borrows the neutral .pe-hero / .pe-hero-grid shell for column rhythm and
+   re-skins only what it renders itself.
+
+   Structure, back to front:
+     · .phi-bg        — the ambient stack (navy wash, subtle grid, the shared
+                        aura, minimal particles). One layer for the whole hero,
+                        so the copy and the preview sit in the same light.
+     · .phi-aura      — the single radial that starts behind the headline and
+                        continues under the product preview; this is what makes
+                        the two columns read as one component.
+     · .phi-scene     — the layout slot for the preview.
+     · .phi-glow      — the slow cyan pulse that seats the card above the page.
+     · .phi-float     — the idle drift (transform lives here so the card's
+                        hover lift can use `transform` without conflict).
+     · .phi-card      — 20px radius, 1px glass border, backdrop blur, premium
+                        shadow + very soft cyan outer glow.
+     · .phi-bar       — slim Studio title bar + LIVE badge (the only chrome).
+     · .phi-stage     — the detection feed, edge to edge, no padding.
+     · .phi-meta      — three quiet facts under the stage.
+
+   Palette: Electric Cyan primary, Emerald secondary, Amber highlight. No
+   purple anywhere in this section — the page-level indigo/violet gradients
+   (headline, primary button, NEW pill) are overridden inside .phi-hero only.
+   =========================================================================== */
+
+/* `.pe-home` prefixes on the shell rules are load-bearing: marketing.css owns
+   `.pe-hero { padding }` at the same specificity (and again inside its own
+   responsive blocks), so a bare `.phi-hero` would win or lose on stylesheet
+   order — which Next.js decides, not us. (0,2,0) settles it deterministically. */
+.pe-home .phi-hero {
+  /* ---- Hero-local palette ---------------------------------------------- */
+  --phi-cyan: #22d3ee;
+  --phi-cyan-2: #06b6d4;
+  --phi-cyan-3: #67e8f9;
+  --phi-emerald: #10b981;
+  --phi-emerald-2: #34d399;
+  --phi-amber: #f59e0b;
+
+  --phi-line: rgba(150, 197, 235, 0.14);
+  --phi-line-soft: rgba(150, 197, 235, 0.08);
+  --phi-chrome: rgba(9, 15, 32, 0.86);
+  --phi-card-bg: rgba(5, 9, 22, 0.72);
+
+  position: relative;
+  isolation: isolate;
+  /* Generous air around the hero; the preview is what should feel large. */
+  padding: clamp(104px, 12vh, 156px) 0 clamp(100px, 11vh, 148px);
+  /* `backwards`, deliberately not `both`/`forwards`: the resting state is then
+     the rule's own opacity (1), so if the animation never runs — throttled or
+     background tab, animations disabled — the hero is simply visible instead
+     of stuck at the 0 keyframe. The staggered Reveals inside carry the rest of
+     the entrance. */
+  animation: phi-hero-in 0.9s var(--pe-ease) backwards;
+}
+
+@keyframes phi-hero-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* =============================================================================
+   AMBIENT BACKDROP
+   Absolutely positioned behind .pe-container (which is z-index: 2). Bleeds
+   sideways past the section; .pe-home already clips overflow-x.
+   ========================================================================== */
+.phi-hero .phi-bg {
+  position: absolute;
+  inset: -12% -18% -10%;
+  z-index: 0;
+  display: block;
+  pointer-events: none;
+}
+
+.phi-hero .phi-bg > span {
+  position: absolute;
+  inset: 0;
+  display: block;
+  pointer-events: none;
+}
+
+/* ---- Deep navy gradient (dark theme only; light mode stays light) --------
+   This layer does double duty. It is the hero's own navy backdrop, and it is
+   also what keeps the section free of purple: the page-wide HomeBackground is
+   `position: fixed` and carries violet mesh tints and orbs, so the hero needs
+   an opaque-enough navy of its own to sit on. The base linear-gradient is
+   near-solid across the top two thirds and feathers to nothing before the
+   section ends, so the hero reads as deep navy while the transition into the
+   next section stays seamless. Other sections keep the page palette. */
+.pe-home[data-theme="dark"] .phi-bg-navy {
+  background:
+    radial-gradient(70% 58% at 74% 46%, rgba(12, 30, 70, 0.55), transparent 74%),
+    radial-gradient(58% 50% at 20% 38%, rgba(9, 22, 52, 0.45), transparent 76%),
+    linear-gradient(180deg,
+      rgba(4, 8, 22, 0.94) 0%,
+      rgba(4, 8, 22, 0.92) 46%,
+      rgba(3, 6, 18, 0.62) 74%,
+      transparent 96%);
+}
+
+.pe-home[data-theme="light"] .phi-bg-navy {
+  background: radial-gradient(66% 56% at 72% 46%, rgba(6, 182, 212, 0.07), transparent 74%);
+}
+
+/* ---- Very subtle engineering grid, masked to a soft pool ----------------- */
+.phi-hero .phi-bg-grid {
+  background-image:
+    linear-gradient(var(--phi-line-soft) 1px, transparent 1px),
+    linear-gradient(90deg, var(--phi-line-soft) 1px, transparent 1px);
+  background-size: 64px 64px;
+  opacity: 0.9;
+  -webkit-mask-image: radial-gradient(74% 70% at 52% 46%, #000 18%, transparent 78%);
+  mask-image: radial-gradient(74% 70% at 52% 46%, #000 18%, transparent 78%);
+}
+
+.pe-home[data-theme="light"] .phi-bg-grid {
+  background-image:
+    linear-gradient(rgba(6, 182, 212, 0.10) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(6, 182, 212, 0.10) 1px, transparent 1px);
+}
+
+/* ---- The shared aura ------------------------------------------------------
+   Three overlapping radials read as one continuous band of light: it begins
+   behind the headline (~26%), swells under the product preview (~70%), and is
+   warmed underneath by a low emerald pool. Pulses slowly. */
+.phi-hero .phi-aura {
+  background:
+    radial-gradient(44% 58% at 24% 40%, rgba(34, 211, 238, 0.15), transparent 70%),
+    radial-gradient(56% 72% at 68% 50%, rgba(34, 211, 238, 0.20), transparent 72%),
+    radial-gradient(46% 48% at 48% 82%, rgba(16, 185, 129, 0.10), transparent 74%),
+    radial-gradient(28% 30% at 88% 20%, rgba(245, 158, 11, 0.07), transparent 72%);
+  filter: blur(6px);
+  animation: phi-aura-pulse 11s ease-in-out infinite;
+}
+
+.pe-home[data-theme="light"] .phi-aura {
+  opacity: 0.55;
+  mix-blend-mode: multiply;
+}
+
+@keyframes phi-aura-pulse {
+  0%, 100% { opacity: 0.85; transform: scale(1); }
+  50%      { opacity: 1;    transform: scale(1.04); }
+}
+
+/* ---- Minimal particles --------------------------------------------------- */
+.phi-hero .phi-particle {
+  position: absolute;
+  left: var(--px);
+  top: var(--py);
+  width: var(--ps);
+  height: var(--ps);
+  border-radius: 50%;
+  background: var(--phi-cyan-3);
+  opacity: 0;
+  box-shadow: 0 0 8px rgba(34, 211, 238, 0.55);
+  animation: phi-drift var(--pd) ease-in-out infinite;
+  animation-delay: var(--pdelay);
+}
+
+/* Two of them carry the emerald / amber accents so the field isn't monotone. */
+.phi-hero .phi-particle:nth-child(3n) { background: var(--phi-emerald-2); box-shadow: 0 0 8px rgba(52, 211, 153, 0.45); }
+.phi-hero .phi-particle:nth-child(5n) { background: var(--phi-amber); box-shadow: 0 0 8px rgba(245, 158, 11, 0.40); }
+
+@keyframes phi-drift {
+  0%, 100% { opacity: 0;    transform: translate3d(0, 0, 0); }
+  50%      { opacity: 0.55; transform: translate3d(0, -26px, 0); }
+}
+
+/* =============================================================================
+   LEFT COLUMN — copy, re-skinned to the cyan / emerald palette
+   ========================================================================== */
+.pe-home .phi-hero .phi-copy {
+  position: relative;
+  z-index: 1;
+}
+
+/* Announcement badge — deliberately quiet. It is the least important thing in
+   the column, so the solid gradient pill becomes a flat outlined chip, the
+   type steps down, and the whole row loses its glow. It should register as a
+   footnote above the headline, not compete with the CTA. */
+.pe-home .phi-hero .phi-pill {
+  background: none;
+  color: var(--phi-cyan);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  padding: 2px 7px;
+  border: 1px solid rgba(34, 211, 238, 0.34);
+}
+
+.pe-home .phi-hero .phi-badge {
+  font-size: 13px;
+  padding: 5px 12px 5px 6px;
+  margin-bottom: var(--pe-s7);
+  color: var(--pe-text-3);
+}
+
+.pe-home .phi-hero .phi-badge b {
+  font-weight: 600;
+  color: var(--pe-text-2);
+}
+
+.pe-home[data-theme="dark"] .phi-hero .phi-badge {
+  background: rgba(9, 16, 34, 0.42);
+  border-color: rgba(150, 197, 235, 0.11);
+  box-shadow: none;
+}
+
+/* Headline: same entrance choreography, cyan → emerald gradient instead of
+   the page's violet. Both the lead words and the accent phrase are retargeted
+   so the two lines stay one continuous flow. */
+.pe-home .phi-hero .pe-ht-word:not(.pe-ht-wipe),
+.pe-home .phi-hero .pe-grad-text {
+  background: linear-gradient(90deg, #67e8f9, #22d3ee, #34d399, #22d3ee, #67e8f9);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+.pe-home[data-theme="light"] .phi-hero .pe-ht-word:not(.pe-ht-wipe),
+.pe-home[data-theme="light"] .phi-hero .pe-grad-text {
+  background: linear-gradient(90deg, #0e7490, #0891b2, #059669, #0891b2, #0e7490);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Hierarchy: a large headline, a calmer lede, comfortable spacing.
+   The cap is set by the 40% track, not by taste: `.pe-ht-line` is nowrap above
+   1000px, so the headline's widest line ("Build, Train & Deploy") is the copy
+   column's min-content floor — and any value that exceeds 40% of the row would
+   quietly widen the track and break the split. At the 1520px container that
+   track is ~558px of content, which this line fills exactly at 50px; 48px
+   leaves ~22px of slack for machines where the font measures a shade wider.
+   The 3.05vw middle term keeps the same relationship at narrower widths, and
+   the track's `min-content` floor is the backstop: if the line ever does
+   exceed 40%, the split drifts a point or two rather than clipping the text. */
+.pe-home .phi-hero .pe-h1 {
+  font-size: clamp(36px, 3.05vw, 48px);
+  letter-spacing: -0.038em;
+  line-height: 1.07;
+}
+
+.pe-home .phi-hero .pe-hero-title {
+  max-width: none;
+}
+
+/* --- Descender clipping fix (the 'y' in "Every", the 'g' in "Edge") --------
+   `.pe-ht-word` is an inline-block painted with `-webkit-background-clip: text`
+   over a transparent fill, and `.pe-ht-wipe` additionally carries a mask. Both
+   clip to the element's own box — and at `line-height: 1.07` that box is
+   shorter than the font's vertical extent: measured at 48px, the box is
+   51.36px against Inter's 59px of ascent+descent, so the half-leading goes
+   negative by 3.8px at each edge. The 'y' and 'g' tails drop 11px below the
+   baseline but the box bottom sits only 8.2px below it, so the last ~2.8px of
+   each tail fell outside the painted area and lost its gradient — reading as a
+   cropped letter.
+
+   Padding the box past the descender fixes it; the equal negative margin
+   cancels the padding's contribution to the line box, so line positions are
+   byte-for-byte unchanged. Sized in em so it holds at every clamp() step. */
+.pe-home .phi-hero .pe-ht-word {
+  padding-top: 0.10em;
+  padding-bottom: 0.22em;
+  margin-top: -0.10em;
+  margin-bottom: -0.22em;
+}
+
+/* --- Wrapping safety net --------------------------------------------------
+   marketing.css sets `.pe-ht-line { white-space: nowrap }`, which is what made
+   overflow possible in the first place: a line too wide for the column had no
+   way to break. Allowing normal wrapping plus `text-wrap: balance` means the
+   headline redistributes across lines instead of overrunning, and it also
+   drops the copy column's `min-content` floor from "the whole line" to "the
+   longest word" — so the 40/60 split now holds exactly at every width rather
+   than drifting when the headline gets tight. At desktop sizes the two
+   authored lines still fit as written and balance is a no-op. */
+.pe-home .phi-hero .pe-ht-line {
+  white-space: normal;
+  text-wrap: balance;
+}
+
+.pe-home .phi-hero .pe-lede {
+  margin-top: var(--pe-s6);
+  max-width: 44ch;
+  font-size: clamp(16px, 1.15vw, 18px);
+  line-height: 1.7;
+}
+
+.pe-home .phi-hero .pe-hero-cta {
+  margin-top: var(--pe-s8);
+}
+
+.pe-home .phi-hero ul.pe-trust {
+  margin-top: var(--pe-s7);
+}
+
+.phi-hero .pe-trust li { font-size: 15px; }
+.phi-hero .pe-trust svg { color: var(--phi-emerald-2); }
+
+/* =============================================================================
+   BUTTONS — gradient cyan primary, dark outline secondary
+   ========================================================================== */
+.pe-home .phi-hero .phi-btn {
+  border-radius: 14px;
+  transition:
+    transform 0.35s var(--pe-ease),
+    box-shadow 0.35s var(--pe-ease),
+    background 0.35s var(--pe-ease),
+    border-color 0.35s var(--pe-ease);
+}
+
+/* Primary CTA — carries a soft cyan glow of its own so it reads as the single
+   lit element in the copy column.
+
+   The halo is built from layered box-shadows rather than a blurred pseudo-
+   element behind the button. A `::after { z-index: -1 }` would be the usual
+   trick, but it is unsafe here: the button takes `transform: translateY(-3px)`
+   on hover, and a transform creates a stacking context — which would re-parent
+   the pseudo and paint the halo *over* the button face on hover instead of
+   behind it. Box-shadows always paint outside the border box, so no hover
+   state can invert them. Four rings of increasing blur and negative spread
+   give the falloff the single shadow was missing. */
+.pe-home .phi-hero .phi-btn-primary {
+  color: #032027;
+  font-weight: 700;
+  background: linear-gradient(120deg, #22d3ee 0%, #06b6d4 52%, #14b8a6 100%);
+  background-size: 180% 180%;
+  border-color: transparent;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.38),
+    0 0 0 1px rgba(34, 211, 238, 0.20),
+    0 4px 14px -4px rgba(34, 211, 238, 0.50),
+    0 10px 30px -10px rgba(34, 211, 238, 0.62),
+    0 20px 54px -18px rgba(34, 211, 238, 0.52),
+    0 0 44px -10px rgba(34, 211, 238, 0.34);
+}
+
+.pe-home .phi-hero .phi-btn-primary:hover {
+  transform: translateY(-3px);
+  background-position: 100% 50%;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.46),
+    0 0 0 1px rgba(34, 211, 238, 0.34),
+    0 6px 18px -4px rgba(34, 211, 238, 0.60),
+    0 14px 38px -10px rgba(34, 211, 238, 0.76),
+    0 28px 68px -18px rgba(34, 211, 238, 0.62),
+    0 0 62px -8px rgba(34, 211, 238, 0.48);
+}
+
+.pe-home[data-theme="dark"] .phi-hero .phi-btn-outline {
+  color: var(--pe-text);
+  background: rgba(7, 12, 28, 0.60);
+  border-color: rgba(150, 197, 235, 0.20);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.pe-home[data-theme="dark"] .phi-hero .phi-btn-outline:hover {
+  transform: translateY(-3px);
+  background: rgba(10, 18, 40, 0.78);
+  border-color: rgba(34, 211, 238, 0.46);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.07),
+    0 0 26px -12px rgba(34, 211, 238, 0.55);
+}
+
+.pe-home[data-theme="light"] .phi-hero .phi-btn-outline {
+  color: #0f172a;
+  background: rgba(255, 255, 255, 0.84);
+  border-color: rgba(15, 23, 42, 0.16);
+}
+
+.pe-home[data-theme="light"] .phi-hero .phi-btn-outline:hover {
+  transform: translateY(-3px);
+  border-color: rgba(8, 145, 178, 0.55);
+  box-shadow: 0 12px 30px -16px rgba(8, 145, 178, 0.5);
+}
+
+/* =============================================================================
+   RIGHT COLUMN — the Petal Edge Studio preview
+   ========================================================================== */
+.phi-scene-wrap { position: relative; z-index: 1; }
+
+.phi-scene {
+  position: relative;
+  width: 100%;
+  /* Capped near the source's native width so the feed stays crisp while still
+     dominating the page at 60% of a 1520px container. */
+  max-width: 860px;
+  margin: 0 auto;
+  isolation: isolate;
+}
+
+/* ---- Slow cyan pulse behind the card ------------------------------------- */
+.pe-home .phi-glow {
+  position: absolute;
+  z-index: 0;
+  inset: -8% -7%;
+  display: block;
+  pointer-events: none;
+  border-radius: 48px;
+  background:
+    radial-gradient(52% 52% at 50% 44%, rgba(34, 211, 238, 0.20), transparent 70%),
+    radial-gradient(62% 58% at 46% 66%, rgba(16, 185, 129, 0.12), transparent 74%);
+  filter: blur(10px);
+  animation: phi-breathe 9s ease-in-out infinite;
+}
+
+@keyframes phi-breathe {
+  0%, 100% { opacity: 0.70; transform: scale(1); }
+  50%      { opacity: 1;    transform: scale(1.045); }
+}
+
+/* ---- Idle float ----------------------------------------------------------
+   Kept on its own wrapper so .phi-card's hover lift owns `transform` alone. */
+.phi-float {
+  position: relative;
+  z-index: 1;
+  animation: phi-float 9s ease-in-out infinite;
+  will-change: transform;
+}
+
+@keyframes phi-float {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50%      { transform: translate3d(0, -12px, 0); }
+}
+
+/* ---- The card ------------------------------------------------------------
+   Software, not media: glass border, backdrop blur, premium soft shadow and a
+   very soft cyan outer glow so it floats just above the backdrop.
+
+   The 3D tilt lives here rather than on .phi-float so the two never fight over
+   `transform` — the wrapper owns the idle drift, the card owns the perspective
+   and the hover response. `perspective()` is used as a transform function (not
+   a `perspective` property on the parent) so the whole 3D setup is contained
+   in this one rule. Hovering rotates the card back to flat: it reads as the
+   panel turning to face you. */
+.pe-home .phi-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border-radius: 20px;
+  overflow: hidden;
+  transform: perspective(2200px) rotateY(-5deg) rotateX(1.4deg);
+  transform-origin: 50% 50%;
+  border: 1px solid rgba(150, 197, 235, 0.16);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.07),
+    0 0 0 1px rgba(34, 211, 238, 0.06),
+    0 20px 44px -22px rgba(2, 6, 20, 0.72),
+    0 50px 96px -36px rgba(2, 6, 20, 0.68),
+    0 0 72px -14px rgba(34, 211, 238, 0.16);
+  transition:
+    transform 0.5s var(--pe-ease),
+    box-shadow 0.5s var(--pe-ease),
+    border-color 0.5s var(--pe-ease);
+}
+
+/* The glass itself, split onto its own layer instead of living on .phi-card.
+
+   `backdrop-filter` pulls every descendant of the element carrying it into the
+   blurred group, so with it on .phi-card the <video> below could no longer take
+   the compositor's direct video path — each decoded frame was re-blended
+   through the blur instead. And because .phi-float translates this card on a 9s
+   infinite loop, the backdrop was being re-sampled every single frame, forever,
+   for as long as the page was open. That is the hero's frame-rate cost.
+
+   As a sibling layer the blur samples the same backdrop and renders the same
+   glass, but the video composites independently of it. Purely a compositing
+   change: inset 0 under a rule that already clips to the 20px radius. */
+.pe-home .phi-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: var(--phi-card-bg);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+/* Both children sit above the glass layer. .phi-stage is opaque so it hides the
+   blur entirely; only .phi-bar's translucent chrome actually samples it. */
+.pe-home .phi-bar,
+.pe-home .phi-stage {
+  position: relative;
+  z-index: 1;
+}
+
+.pe-home .phi-card:hover {
+  transform: perspective(2200px) rotateY(0deg) rotateX(0deg) translateY(-6px) scale(1.008);
+  border-color: rgba(34, 211, 238, 0.26);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.09),
+    0 0 0 1px rgba(34, 211, 238, 0.12),
+    0 28px 56px -22px rgba(2, 6, 20, 0.74),
+    0 66px 118px -38px rgba(2, 6, 20, 0.72),
+    0 0 96px -12px rgba(34, 211, 238, 0.26);
+}
+
+/* Follows the background onto the glass layer, since .phi-card no longer paints
+   one itself. */
+.pe-home[data-theme="light"] .phi-card::before {
+  background: rgba(255, 255, 255, 0.78);
+}
+
+.pe-home[data-theme="light"] .phi-card {
+  border-color: rgba(15, 23, 42, 0.10);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 20px 44px -24px rgba(15, 23, 42, 0.28),
+    0 50px 96px -40px rgba(15, 23, 42, 0.24),
+    0 0 72px -18px rgba(6, 182, 212, 0.30);
+}
+
+/* ---- Studio application bar — the card's only chrome ---------------------- */
+.pe-home .phi-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex: none;
+  height: 40px;
+  padding: 0 15px;
+  background: var(--phi-chrome);
+  border-bottom: 1px solid var(--phi-line);
+}
+
+.pe-home[data-theme="light"] .phi-bar {
+  background: rgba(248, 250, 252, 0.92);
+  border-bottom-color: rgba(15, 23, 42, 0.09);
+}
+
+.phi-bar-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.005em;
+  color: var(--pe-text);
+  line-height: 1;
+}
+
+.phi-bar-mark {
+  width: 9px;
+  height: 9px;
+  border-radius: 3px;
+  background: linear-gradient(135deg, var(--phi-cyan-3), var(--phi-cyan-2));
+  box-shadow: 0 0 10px -1px rgba(34, 211, 238, 0.7);
+}
+
+/* LIVE badge — emerald, slow pulse. */
+.phi-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  line-height: 1;
+  padding: 5px 10px 5px 8px;
+  border-radius: 100px;
+  color: var(--phi-emerald-2);
+  background: rgba(16, 185, 129, 0.10);
+  border: 1px solid rgba(16, 185, 129, 0.24);
+}
+
+.pe-home[data-theme="light"] .phi-live {
+  color: #047857;
+  background: rgba(16, 185, 129, 0.10);
+  border-color: rgba(16, 185, 129, 0.30);
+}
+
+.phi-live-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--phi-emerald-2);
+  box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.55);
+  animation: phi-live-pulse 2.4s ease-out infinite;
+}
+
+@keyframes phi-live-pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.55); }
+  70%  { box-shadow: 0 0 0 7px rgba(52, 211, 153, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(52, 211, 153, 0); }
+}
+
+/* ---- Stage ---------------------------------------------------------------
+   The stage shape drives how the clip is framed, and `object-fit: cover` means
+   any mismatch is a silent centre-crop rather than a visible error — a square
+   source in a 16:9 stage quietly loses ~44% of its height.
+
+   So the ratio is a variable, not a constant. The 16/9 default is what renders
+   before any JS runs (and if JS never runs); HeroImmersive then overwrites
+   `--phi-stage-ar` from the clip's real videoWidth/videoHeight on
+   loadedmetadata, so dropping in a differently-shaped video needs no CSS edit
+   and can never crop. Set the default to match whatever clip normally ships to
+   avoid a one-frame reflow on load. */
+.pe-home .phi-stage {
+  position: relative;
+  flex: 1 1 auto;
+  aspect-ratio: var(--phi-stage-ar, 16 / 9);
+  width: 100%;
+  overflow: hidden;
+  background: #04070f;
+}
+
+.pe-home .phi-video {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  object-fit: cover;
+  /* Inert surface: no context menu, no click-to-pause, no hover chrome. */
+  pointer-events: none;
+}
+
+/* Belt-and-braces against any UA-injected media chrome. */
+.pe-home .phi-video::-webkit-media-controls,
+.pe-home .phi-video::-webkit-media-controls-enclosure,
+.pe-home .phi-video::-webkit-media-controls-panel,
+.pe-home .phi-video::-webkit-media-controls-start-playback-button {
+  display: none !important;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* =============================================================================
+   LAYOUT — 40 / 60
+   ========================================================================== */
+.phi-hero .pe-container { max-width: 1520px; }
+
+/* Base: single column (mobile / tablet). The page's own .pe-hero-grid is
+   2-column down to 1000px, so the split is re-declared explicitly below. */
+.phi-hero .pe-hero-grid {
+  grid-template-columns: minmax(0, 1fr);
+  row-gap: var(--pe-s9);
+  align-items: center;
+}
+
+/* The 40 / 60 split. The copy track keeps a `min-content` floor as a backstop,
+   but with the headline now allowed to wrap (see .pe-ht-line above) that floor
+   is just the longest word — so the split resolves to a true 40/60 at every
+   width instead of being pushed wider by the headline. Below ~1180px the
+   preview would be squeezed under ~560px, so we stack instead. The column gap
+   is deliberately tight: the two halves should read as one component, and the
+   aura runs continuously behind both. */
+@media (min-width: 1180px) {
+  .phi-hero .pe-hero-grid {
+    grid-template-columns: minmax(min-content, 40fr) minmax(0, 60fr);
+    column-gap: clamp(28px, 3vw, 52px);
+    row-gap: 0;
+  }
+  .phi-hero .phi-copy { padding-right: 12px; }
+  .phi-hero .phi-scene { margin-right: 0; margin-left: auto; }
+}
+
+/* 1001–1179px: stacked — copy first, then a full-width preview. */
+@media (min-width: 1001px) and (max-width: 1179.98px) {
+  .phi-hero .pe-hero-grid { grid-template-columns: minmax(0, 1fr); }
+  .pe-home .phi-hero .pe-lede { max-width: 60ch; }
+  .phi-scene { max-width: 780px; margin: 8px auto 0; }
+}
+
+/* =============================================================================
+   RESPONSIVE
+   ========================================================================== */
+@media (max-width: 1000px) {
+  .pe-home .phi-hero { padding: 100px 0 92px; }
+  .pe-home .phi-hero .pe-h1 { font-size: clamp(32px, 5.4vw, 46px); }
+  .phi-scene { max-width: 620px; margin-top: 8px; }
+  .pe-home .phi-hero .pe-lede { max-width: 60ch; margin-left: auto; margin-right: auto; }
+  /* Stacked and centred, the tilt reads as a mistake rather than as depth. */
+  .pe-home .phi-card { border-radius: 18px; transform: none; }
+  .pe-home .phi-card:hover { transform: translateY(-6px); }
+  .pe-home .phi-bar { height: 38px; padding: 0 14px; }
+}
+
+@media (max-width: 640px) {
+  .pe-home .phi-hero { padding: 84px 0 76px; }
+  .pe-home .phi-hero .pe-h1 { font-size: clamp(30px, 7.6vw, 38px); }
+  .phi-scene { max-width: 420px; }
+  .pe-home .phi-glow { inset: -6% -5%; }
+  .pe-home .phi-card { border-radius: 16px; }
+  .phi-bar-brand { font-size: 12px; }
+  .phi-hero .phi-bg-grid { background-size: 44px 44px; }
+}
+
+/* =============================================================================
+   MOTION PREFERENCES
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  .phi-hero { animation: none; }
+  .pe-home .phi-glow { animation: none; opacity: 0.85; transform: none; }
+  .phi-hero .phi-aura { animation: none; opacity: 0.95; transform: none; }
+  .phi-float { animation: none; }
+  .phi-hero .phi-particle { animation: none; opacity: 0.35; }
+  .phi-live-dot { animation: none; }
+  /* The tilt is a static transform, not motion, so it stays — only the
+     transition to flat is dropped, which would otherwise be an animation. */
+  .pe-home .phi-card { transition: none; }
+  .pe-home .phi-card:hover { transform: perspective(2200px) rotateY(-5deg) rotateX(1.4deg); }
+  .pe-home .phi-hero .phi-btn:hover { transform: none; }
+}

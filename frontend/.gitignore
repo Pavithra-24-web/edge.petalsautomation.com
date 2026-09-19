@@ -1,0 +1,26 @@
+# Environment
+.env.local
+.env
+.env.*
+
+# Dependencies
+node_modules/
+
+# Next.js
+.next/
+out/
+
+# Build
+*.tsbuildinfo
+*.log
+build.txt
+*.zip
+
+# Python cache
+.pytest_cache/
+
+# Local tooling
+.antigravityignore
+
+# Raw media sources
+media-src/

@@ -1,0 +1,6859 @@
+/* =============================================================================
+   Petal Edge — Marketing homepage design system
+   Fully self-contained + namespaced (.pe-* / [data-pe-home]) so it never
+   collides with the heavy app-wide globals.css. Drives light + dark mode via
+   CSS custom properties keyed off the [data-theme] attribute on .pe-home.
+   ========================================================================== */
+
+.pe-home {
+  /* ---- Brand palette ---------------------------------------------------- */
+  --pe-primary: #4f46e5;
+  --pe-primary-2: #6366f1;
+  --pe-secondary: #06b6d4;
+  --pe-secondary-2: #14b8a6;
+  --pe-accent: #8b5cf6;
+  --pe-accent-2: #22c55e;
+
+  /* ---- Semantic tokens (dark = default) --------------------------------- */
+  --pe-bg: #06070f;
+  --pe-bg-2: #0a0c1a;
+  --pe-bg-3: #0e1026;
+  --pe-surface: rgba(20, 23, 46, 0.55);
+  --pe-surface-solid: #12142b;
+  --pe-surface-hover: rgba(30, 34, 66, 0.7);
+  --pe-border: rgba(255, 255, 255, 0.09);
+  --pe-border-strong: rgba(255, 255, 255, 0.16);
+  --pe-text: #f4f5fb;
+  --pe-text-2: #b7bdd4;
+  --pe-text-3: #7e849e;
+  --pe-grid: rgba(255, 255, 255, 0.075);
+  --pe-grid-major: rgba(255, 255, 255, 0.14);
+  --pe-glow-a: rgba(99, 102, 241, 0.5);
+  --pe-glow-b: rgba(139, 92, 246, 0.42);
+  --pe-glow-c: rgba(6, 182, 212, 0.32);
+
+  /* ---- Ambient background layer tuning ----------------------------------
+     Kept separate from the glow tokens so the backdrop can stay restrained
+     (~90% neutral) independent of the punchier component glows above.       */
+  --pe-aurora-1: rgba(99, 102, 241, 0.42);
+  /* top-right primary light      */
+  --pe-aurora-2: rgba(139, 92, 246, 0.30);
+  /* top violet wash              */
+  --pe-aurora-3: rgba(6, 182, 212, 0.22);
+  /* cool counter-light, low-left */
+  --pe-aurora-4: rgba(79, 70, 229, 0.24);
+  /* bottom-left indigo pool      */
+  --pe-aurora-5: rgba(139, 92, 246, 0.22);
+  /* bottom-right violet pool     */
+  --pe-aurora-center: rgba(99, 102, 241, 0.20);
+  /* soft hero-center lift     */
+  --pe-mesh-1: rgba(99, 102, 241, 0.22);
+  /* indigo   */
+  --pe-mesh-2: rgba(6, 182, 212, 0.16);
+  /* cyan     */
+  --pe-mesh-3: rgba(139, 92, 246, 0.15);
+  /* purple   */
+  --pe-mesh-4: rgba(59, 130, 246, 0.13);
+  /* blue     */
+  --pe-hairline: rgba(255, 255, 255, 0.09);
+  --pe-ring: rgba(255, 255, 255, 0.09);
+  /* decorative geometry circles  */
+  --pe-orb-a: rgba(79, 70, 229, 0.48);
+  --pe-orb-b: rgba(139, 92, 246, 0.40);
+  --pe-orb-c: rgba(6, 182, 212, 0.32);
+  --pe-orb-d: rgba(59, 130, 246, 0.30);
+  --pe-orb-e: rgba(139, 92, 246, 0.30);
+  --pe-orb-opacity: 0.72;
+  --pe-orb-blend: screen;
+  /* Per-section directional lighting — four hues cycled across sections. */
+  --pe-section-glow: rgba(99, 102, 241, 0.12);
+  --pe-sg-1: rgba(99, 102, 241, 0.16);
+  /* indigo */
+  --pe-sg-2: rgba(6, 182, 212, 0.13);
+  /* cyan   */
+  --pe-sg-3: rgba(139, 92, 246, 0.15);
+  /* purple */
+  --pe-sg-4: rgba(59, 130, 246, 0.13);
+  /* blue   */
+  --pe-vignette: rgba(3, 4, 12, 0.68);
+  --pe-noise-opacity: 0.03;
+  --pe-noise-blend: overlay;
+  --pe-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --pe-shadow: 0 18px 44px rgba(0, 0, 0, 0.45);
+  --pe-shadow-lg: 0 40px 90px rgba(2, 4, 14, 0.65);
+  --pe-nav-bg: rgba(8, 10, 22, 0.72);
+  --pe-card-top: rgba(255, 255, 255, 0.06);
+
+  --pe-gradient: linear-gradient(120deg, #6366f1 0%, #8b5cf6 48%, #06b6d4 100%);
+  --pe-gradient-soft: linear-gradient(135deg, rgba(99, 102, 241, 0.16), rgba(139, 92, 246, 0.12));
+
+  /* ---- Scale ------------------------------------------------------------ */
+  --pe-radius: 20px;
+  --pe-radius-lg: 28px;
+  --pe-radius-sm: 14px;
+  --pe-maxw: 1200px;
+  --pe-ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* ---- Spacing scale (8px vertical rhythm, 4px sub-steps) ----------------
+     Reuse these everywhere so section-to-section and in-card spacing stays
+     consistent instead of drifting into one-off pixel values.               */
+  --pe-s1: 4px;
+  --pe-s2: 8px;
+  --pe-s3: 12px;
+  --pe-s4: 16px;
+  --pe-s5: 20px;
+  --pe-s6: 24px;
+  --pe-s7: 32px;
+  --pe-s8: 40px;
+  --pe-s9: 48px;
+  --pe-s10: 64px;
+  --pe-s11: 80px;
+  --pe-s12: 120px;
+
+  /* Semantic spacing — derived from the scale above */
+  --pe-gutter: var(--pe-s6);
+  /* container side padding                 */
+  --pe-section-y: var(--pe-s12);
+  /* section top/bottom padding             */
+  --pe-head-gap: var(--pe-s10);
+  /* section head → content grid            */
+  --pe-stack-gap: var(--pe-s5);
+  /* eyebrow → heading → subtitle rhythm    */
+  --pe-grid-gap: var(--pe-s6);
+  /* gutters between cards in a grid        */
+  --pe-card-pad: var(--pe-s7);
+  /* inner padding of a glass card          */
+  --pe-col-gap: var(--pe-s10);
+  /* gap between columns in a split layout  */
+
+  background: var(--pe-bg);
+  color: var(--pe-text);
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.55;
+  min-height: 100vh;
+  overflow-x: clip;
+  position: relative;
+  isolation: isolate;
+}
+
+.pe-home[data-theme="light"] {
+  --pe-bg: #ffffff;
+  --pe-bg-2: #f8fafc;
+  --pe-bg-3: #eef2ff;
+  --pe-surface: rgba(255, 255, 255, 0.72);
+  --pe-surface-solid: #ffffff;
+  --pe-surface-hover: rgba(255, 255, 255, 0.95);
+  --pe-border: rgba(15, 23, 42, 0.09);
+  --pe-border-strong: rgba(79, 70, 229, 0.22);
+  --pe-text: #111827;
+  --pe-text-2: #374151;
+  --pe-text-3: #6b7280;
+  --pe-grid: rgba(79, 70, 229, 0.10);
+  --pe-grid-major: rgba(79, 70, 229, 0.17);
+  --pe-glow-a: rgba(99, 102, 241, 0.42);
+  --pe-glow-b: rgba(139, 92, 246, 0.36);
+  --pe-glow-c: rgba(6, 182, 212, 0.30);
+
+  /* Ambient background — richer washes so the white surface reads as lit,
+     not flat. Multiply blend keeps them as soft color, never neon. */
+  --pe-aurora-1: rgba(99, 102, 241, 0.20);
+  --pe-aurora-2: rgba(139, 92, 246, 0.16);
+  --pe-aurora-3: rgba(6, 182, 212, 0.14);
+  --pe-aurora-4: rgba(79, 70, 229, 0.14);
+  --pe-aurora-5: rgba(139, 92, 246, 0.13);
+  --pe-aurora-center: rgba(99, 102, 241, 0.13);
+  --pe-mesh-1: rgba(99, 102, 241, 0.17);
+  --pe-mesh-2: rgba(6, 182, 212, 0.14);
+  --pe-mesh-3: rgba(139, 92, 246, 0.13);
+  --pe-mesh-4: rgba(59, 130, 246, 0.12);
+  --pe-hairline: rgba(79, 70, 229, 0.11);
+  --pe-ring: rgba(79, 70, 229, 0.13);
+  --pe-orb-a: rgba(99, 102, 241, 0.26);
+  --pe-orb-b: rgba(139, 92, 246, 0.22);
+  --pe-orb-c: rgba(6, 182, 212, 0.20);
+  --pe-orb-d: rgba(59, 130, 246, 0.19);
+  --pe-orb-e: rgba(139, 92, 246, 0.18);
+  --pe-orb-opacity: 0.85;
+  --pe-orb-blend: multiply;
+  --pe-section-glow: rgba(99, 102, 241, 0.10);
+  --pe-sg-1: rgba(99, 102, 241, 0.11);
+  --pe-sg-2: rgba(6, 182, 212, 0.10);
+  --pe-sg-3: rgba(139, 92, 246, 0.10);
+  --pe-sg-4: rgba(59, 130, 246, 0.09);
+  --pe-vignette: rgba(15, 23, 42, 0.09);
+  --pe-noise-opacity: 0.02;
+  --pe-noise-blend: multiply;
+  --pe-shadow-sm: 0 2px 10px rgba(15, 23, 42, 0.06);
+  --pe-shadow: 0 20px 50px rgba(15, 23, 42, 0.1);
+  --pe-shadow-lg: 0 40px 90px rgba(15, 23, 42, 0.14);
+  --pe-nav-bg: rgba(255, 255, 255, 0.78);
+  --pe-card-top: rgba(255, 255, 255, 0.9);
+}
+
+.pe-home *,
+.pe-home *::before,
+.pe-home *::after {
+  box-sizing: border-box;
+}
+
+.pe-home h1,
+.pe-home h2,
+.pe-home h3,
+.pe-home h4,
+.pe-home p {
+  margin: 0;
+}
+
+.pe-home a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.pe-home ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pe-home img {
+  max-width: 100%;
+  display: block;
+}
+
+.pe-home button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.pe-home :focus-visible {
+  outline: 2px solid var(--pe-primary-2);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+/* =============================================================================
+   AMBIENT BACKGROUND
+   One fixed, non-interactive stack of masked layers (see HomeBackground.tsx).
+   Ordered back-to-front; each layer stays low-contrast so content leads.
+   ========================================================================== */
+.pe-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  /* Promote once for the whole stack rather than per-layer. */
+  contain: strict;
+}
+
+.pe-bg>* {
+  position: absolute;
+  inset: 0;
+}
+
+/* 1 — Ambient lighting: five huge, very-soft radial lights anchored to the
+   viewport corners + a gentle center lift. Each ~800–1400px wide and kept
+   under ~12% opacity so they read as light in the room, never as color blobs. */
+.pe-bg-aurora {
+  background:
+    /* top-right primary */
+    radial-gradient(1650px 1200px at 90% -8%, var(--pe-aurora-1), transparent 66%),
+    /* top wash violet   */
+    radial-gradient(1800px 1300px at 48% -16%, var(--pe-aurora-2), transparent 64%),
+    /* top-left cool     */
+    radial-gradient(1400px 1150px at 2% 2%, var(--pe-aurora-3), transparent 68%),
+    /* hero-center lift  */
+    radial-gradient(1500px 1100px at 50% 32%, var(--pe-aurora-center), transparent 70%),
+    /* bottom-left pool  */
+    radial-gradient(1500px 1300px at 0% 100%, var(--pe-aurora-4), transparent 68%),
+    /* bottom-right pool */
+    radial-gradient(1600px 1350px at 100% 94%, var(--pe-aurora-5), transparent 68%);
+}
+
+/* 2 — Mesh: four very-low-opacity brand tints (indigo / cyan / purple / blue)
+   for depth and warmth. Masked so it fades before the footer. */
+.pe-bg-mesh {
+  background:
+    radial-gradient(52% 48% at 18% 22%, var(--pe-mesh-1), transparent 74%),
+    radial-gradient(50% 44% at 84% 36%, var(--pe-mesh-2), transparent 74%),
+    radial-gradient(48% 46% at 68% 72%, var(--pe-mesh-3), transparent 76%),
+    radial-gradient(52% 48% at 28% 84%, var(--pe-mesh-4), transparent 76%);
+  -webkit-mask-image: linear-gradient(#000, #000 82%, transparent 100%);
+  mask-image: linear-gradient(#000, #000 82%, transparent 100%);
+}
+
+/* 3 — Engineering blueprint grid: two tiers — 24px minor + 120px major, at
+   different opacities. Faded toward every page edge (edge-vignette mask) so it
+   dissolves naturally into the field rather than tiling to a hard border. */
+.pe-bg-grid {
+  inset: -2px;
+  background-image:
+    linear-gradient(to right, var(--pe-grid) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--pe-grid) 1px, transparent 1px),
+    linear-gradient(to right, var(--pe-grid-major) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--pe-grid-major) 1px, transparent 1px);
+  background-size: 24px 24px, 24px 24px, 120px 120px, 120px 120px;
+  /* Grid reads clearly across the whole field, softened only toward the edges
+     so it never tiles to a hard border. Top stays strongest (hero), with a
+     gentle overall falloff rather than a tight radial that erased it below. */
+  -webkit-mask-image:
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.85) 55%, rgba(0, 0, 0, 0.4) 90%, transparent 100%),
+    linear-gradient(to right, transparent, #000 10%, #000 90%, transparent);
+  mask-image:
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.85) 55%, rgba(0, 0, 0, 0.4) 90%, transparent 100%),
+    linear-gradient(to right, transparent, #000 10%, #000 90%, transparent);
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+}
+
+/* 4 — Thin geometric guide lines: two faint verticals aligned to the major
+   grid, fading top-to-bottom. Purely structural — no color. */
+.pe-bg-lines {
+  background-image:
+    linear-gradient(to bottom, var(--pe-hairline), transparent 70%),
+    linear-gradient(to bottom, var(--pe-hairline), transparent 62%);
+  background-repeat: no-repeat;
+  background-position: 17% 0, 83% 0;
+  background-size: 1px 100%, 1px 100%;
+}
+
+/* 5 — Depth orbs: soft, heavily blurred circles that drift slowly. Screen /
+   multiply blend keeps them as light rather than opaque paint. */
+.pe-bg-orbs {
+  mix-blend-mode: var(--pe-orb-blend);
+}
+
+.pe-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(120px);
+  opacity: var(--pe-orb-opacity);
+  will-change: transform;
+}
+
+.pe-orb.o1 {
+  width: 760px;
+  height: 760px;
+  top: -220px;
+  right: -160px;
+  background: var(--pe-orb-a);
+  animation: pe-drift-a 26s ease-in-out infinite;
+}
+
+.pe-orb.o2 {
+  width: 660px;
+  height: 660px;
+  top: 30%;
+  left: -200px;
+  background: var(--pe-orb-b);
+  animation: pe-drift-b 32s ease-in-out infinite;
+}
+
+.pe-orb.o3 {
+  width: 620px;
+  height: 620px;
+  top: 54%;
+  left: 44%;
+  background: var(--pe-orb-c);
+  animation: pe-drift-c 38s ease-in-out infinite;
+}
+
+.pe-orb.o4 {
+  width: 720px;
+  height: 720px;
+  bottom: -240px;
+  left: 4%;
+  background: var(--pe-orb-d);
+}
+
+.pe-orb.o5 {
+  width: 700px;
+  height: 700px;
+  bottom: -200px;
+  right: -160px;
+  background: var(--pe-orb-e);
+}
+
+.pe-orb.o6 {
+  width: 560px;
+  height: 560px;
+  top: 6%;
+  left: 40%;
+  background: var(--pe-orb-c);
+}
+
+.pe-orb.o7 {
+  width: 640px;
+  height: 640px;
+  top: 44%;
+  right: -180px;
+  background: var(--pe-orb-a);
+}
+
+@keyframes pe-drift-a {
+
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  50% {
+    transform: translate3d(-46px, 42px, 0);
+  }
+}
+
+@keyframes pe-drift-b {
+
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  50% {
+    transform: translate3d(52px, -38px, 0);
+  }
+}
+
+@keyframes pe-drift-c {
+
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  50% {
+    transform: translate3d(-40px, -48px, 0);
+  }
+}
+
+/* 5b — Decorative geometry: a couple of large, thin blueprint circles and a
+   faint dot-field. Extremely subtle — structure you feel more than see. */
+.pe-bg-rings {
+  -webkit-mask-image: radial-gradient(120% 100% at 50% 22%, #000 30%, transparent 78%);
+  mask-image: radial-gradient(120% 100% at 50% 22%, #000 30%, transparent 78%);
+}
+
+.pe-bg-rings::before,
+.pe-bg-rings::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid var(--pe-ring);
+}
+
+/* large ring drifting off the top-right */
+.pe-bg-rings::before {
+  width: 760px;
+  height: 760px;
+  top: -220px;
+  right: -160px;
+  opacity: 0.7;
+}
+
+/* second concentric guide, offset */
+.pe-bg-rings::after {
+  width: 520px;
+  height: 520px;
+  top: -100px;
+  right: -40px;
+  opacity: 0.45;
+}
+
+/* faint dot-field, low-left, radially faded */
+.pe-bg-dots {
+  background-image: radial-gradient(var(--pe-ring) 1px, transparent 1.4px);
+  background-size: 26px 26px;
+  -webkit-mask-image: radial-gradient(40% 40% at 16% 74%, #000, transparent 72%);
+  mask-image: radial-gradient(40% 40% at 16% 74%, #000, transparent 72%);
+  opacity: 0.6;
+}
+
+/* 6 — Vignette: edge falloff that seats the content column and steers the eye
+   toward the hero. Three stops give a natural, gradual darkening (rather than a
+   single hard ramp) — clear at center, a gentle mid, a darker perimeter. */
+.pe-bg-vignette {
+  background: radial-gradient(118% 90% at 50% 24%,
+      transparent 46%,
+      color-mix(in srgb, var(--pe-vignette) 42%, transparent) 74%,
+      var(--pe-vignette) 100%);
+}
+
+/* 7 — Film grain: ~2% fractal-noise so large flat areas never band. */
+.pe-bg-noise {
+  opacity: var(--pe-noise-opacity);
+  mix-blend-mode: var(--pe-noise-blend);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Cursor glow */
+.pe-cursor-glow {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 440px;
+  height: 440px;
+  margin: -220px 0 0 -220px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--pe-glow-a), transparent 66%);
+  opacity: 0.34;
+  pointer-events: none;
+  z-index: 1;
+  transition: opacity 0.4s ease;
+  mix-blend-mode: screen;
+}
+
+.pe-home[data-theme="light"] .pe-cursor-glow {
+  mix-blend-mode: multiply;
+  opacity: 0.22;
+}
+
+/* ---- Layout primitives ------------------------------------------------- */
+.pe-container {
+  width: 100%;
+  max-width: var(--pe-maxw);
+  margin: 0 auto;
+  padding: 0 var(--pe-gutter);
+  position: relative;
+  z-index: 2;
+}
+
+.pe-section {
+  padding: var(--pe-section-y) 0;
+  position: relative;
+  z-index: 2;
+}
+
+/* --- Per-section lighting -------------------------------------------------
+   Each section carries its own soft directional wash + a hairline top edge,
+   so scrolling reveals gentle light changes and clear depth between sections
+   rather than one flat field. The wash bleeds past the section bounds (clipped
+   globally by .pe-home overflow-x) for seamless transitions. Alternating
+   sections light from opposite sides. Sits behind content (z 0 < container 2). */
+.pe-section::before {
+  content: "";
+  position: absolute;
+  inset: -24% -14%;
+  z-index: 0;
+  pointer-events: none;
+  /* Position + hue set per-section below; inherited into the pseudo via vars. */
+  background:
+    radial-gradient(62% 62% at var(--sx, 24%) var(--sy, 28%), var(--sc, var(--pe-section-glow)), transparent 72%);
+}
+
+/* Six-step cycle — each section lights from a different side with a different
+   brand hue, so scrolling reads as clear light/color transitions. */
+.pe-section:nth-of-type(6n + 1) {
+  --sx: 20%;
+  --sy: 26%;
+  --sc: var(--pe-sg-1);
+}
+
+.pe-section:nth-of-type(6n + 2) {
+  --sx: 82%;
+  --sy: 30%;
+  --sc: var(--pe-sg-3);
+}
+
+.pe-section:nth-of-type(6n + 3) {
+  --sx: 50%;
+  --sy: 74%;
+  --sc: var(--pe-sg-2);
+}
+
+.pe-section:nth-of-type(6n + 4) {
+  --sx: 14%;
+  --sy: 62%;
+  --sc: var(--pe-sg-4);
+}
+
+.pe-section:nth-of-type(6n + 5) {
+  --sx: 86%;
+  --sy: 66%;
+  --sc: var(--pe-sg-1);
+}
+
+.pe-section:nth-of-type(6n + 0) {
+  --sx: 40%;
+  --sy: 22%;
+  --sc: var(--pe-sg-3);
+}
+
+/* Hairline light seam at the top of each section for crisp separation. */
+.pe-section::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, var(--pe-hairline) 22%, var(--pe-hairline) 78%, transparent);
+}
+
+.pe-section-head {
+  max-width: 720px;
+  margin: 0 auto var(--pe-head-gap);
+  text-align: center;
+}
+
+.pe-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  padding: 7px 14px;
+  border-radius: 100px;
+  background: var(--pe-gradient-soft);
+  border: 1px solid var(--pe-border);
+  color: var(--pe-text-2);
+  margin-bottom: var(--pe-stack-gap);
+}
+
+.pe-eyebrow svg {
+  width: 15px;
+  height: 15px;
+  color: var(--pe-primary-2);
+}
+
+.pe-h2 {
+  font-size: clamp(30px, 4vw, 46px);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.08;
+}
+
+.pe-lede {
+  margin-top: var(--pe-stack-gap);
+  font-size: clamp(16px, 1.6vw, 19px);
+  color: var(--pe-text-2);
+  line-height: 1.6;
+}
+
+.pe-grad-text {
+  background: linear-gradient(90deg, #8b5cf6, #6366f1, #3b82f6, #6366f1, #8b5cf6);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  animation: pe-grad-flow 6s linear infinite;
+}
+
+@keyframes pe-grad-flow {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  100% {
+    background-position: 200% 50%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pe-grad-text {
+    animation: none;
+  }
+}
+
+/* ---- Buttons ----------------------------------------------------------- */
+.pe-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1;
+  padding: 13px 22px;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  transition: transform 0.25s var(--pe-ease), box-shadow 0.25s var(--pe-ease), background 0.25s, border-color 0.25s;
+  white-space: nowrap;
+}
+
+.pe-btn svg {
+  width: 17px;
+  height: 17px;
+}
+
+.pe-btn-primary {
+  color: #fff;
+  background: var(--pe-gradient);
+  background-size: 160% 160%;
+  box-shadow: 0 8px 24px rgba(99, 102, 241, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.pe-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 36px rgba(99, 102, 241, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  background-position: 100% 50%;
+}
+
+.pe-btn-ghost {
+  color: var(--pe-text);
+  background: var(--pe-surface);
+  border-color: var(--pe-border-strong);
+  backdrop-filter: blur(10px);
+}
+
+.pe-btn-ghost:hover {
+  transform: translateY(-2px);
+  background: var(--pe-surface-hover);
+  border-color: var(--pe-primary-2);
+}
+
+.pe-btn-lg {
+  padding: 16px 28px;
+  font-size: 16px;
+  border-radius: 14px;
+}
+
+.pe-btn-sm {
+  padding: 10px 16px;
+  font-size: 14px;
+}
+
+/* ---- Glass card -------------------------------------------------------- */
+.pe-card {
+  background: var(--pe-surface);
+  border: 1px solid var(--pe-border);
+  border-radius: var(--pe-radius);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: var(--pe-shadow-sm);
+  position: relative;
+  transition: transform 0.4s var(--pe-ease), box-shadow 0.4s var(--pe-ease), border-color 0.4s;
+}
+
+.pe-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(180deg, var(--pe-card-top), transparent 55%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.pe-card-hover:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--pe-shadow-lg);
+  border-color: var(--pe-border-strong);
+}
+
+/* ---- Premium icon chips ------------------------------------------------
+   Accent-driven duotone. Each chip reads a per-icon --c accent so grids read
+   as an intentionally designed system (Linear / Stripe style), not monochrome.
+   Soft accent-tinted fill + thin accent ring + colored glyph + hover glow.   */
+.pe-ico {
+  --c: #6366f1;
+  position: relative;
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  flex: none;
+  color: var(--c);
+  background: var(--pe-surface);
+  border: 1px solid color-mix(in srgb, var(--c) 30%, var(--pe-border));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    inset 0 0 0 1px color-mix(in srgb, var(--c) 10%, transparent),
+    0 8px 18px -10px color-mix(in srgb, var(--c) 48%, transparent);
+  transition: transform 0.4s var(--pe-ease), box-shadow 0.4s var(--pe-ease), border-color 0.4s;
+}
+
+.pe-ico::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background:
+    radial-gradient(120% 120% at 28% 14%, color-mix(in srgb, var(--c) 34%, transparent), transparent 60%),
+    linear-gradient(150deg, color-mix(in srgb, var(--c) 22%, transparent), color-mix(in srgb, var(--c) 5%, transparent));
+}
+
+.pe-ico svg {
+  position: relative;
+  z-index: 1;
+  width: 22px;
+  height: 22px;
+  stroke-width: 1.85;
+}
+
+/* Solid gradient variant — premium glossy accent chip: diagonal fill, glass
+   edge + top gloss sheen, layered colored ambient + neutral contact shadow. */
+.pe-ico-grad {
+  color: #fff;
+  border: 1px solid color-mix(in srgb, var(--c) 52%, transparent);
+  background:
+    linear-gradient(152deg,
+      color-mix(in srgb, var(--c) 58%, #ffffff) 0%,
+      var(--c) 46%,
+      color-mix(in srgb, var(--c) 80%, #0b0620) 100%);
+  box-shadow:
+    0 14px 28px -10px color-mix(in srgb, var(--c) 58%, transparent),
+    0 3px 8px -2px rgba(3, 6, 23, 0.42),
+    inset 0 1px 0 rgba(255, 255, 255, 0.55),
+    inset 0 -10px 18px -12px rgba(3, 6, 23, 0.55),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.14);
+}
+
+.pe-ico-grad::before {
+  background:
+    radial-gradient(120% 85% at 26% 6%, rgba(255, 255, 255, 0.55), transparent 50%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.22), transparent 44%);
+  opacity: 1;
+}
+
+.pe-ico-grad svg {
+  stroke-width: 2;
+  filter: drop-shadow(0 1px 1.5px rgba(3, 6, 23, 0.3));
+}
+
+/* Lift + glow the chip when its card is hovered */
+.pe-card-hover:hover .pe-ico,
+.pe-dash-item:hover .pe-ico,
+.pe-deploy-card:hover .pe-ico {
+  transform: translateY(-2px) scale(1.05);
+  border-color: color-mix(in srgb, var(--c) 55%, transparent);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.16),
+    inset 0 0 0 1px color-mix(in srgb, var(--c) 16%, transparent),
+    0 14px 28px -10px color-mix(in srgb, var(--c) 42%, transparent);
+}
+
+.pe-card-hover:hover .pe-ico-grad,
+.pe-deploy-card:hover .pe-ico-grad {
+  box-shadow:
+    0 20px 36px -10px color-mix(in srgb, var(--c) 64%, transparent),
+    0 4px 10px -2px rgba(3, 6, 23, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6),
+    inset 0 -10px 18px -12px rgba(3, 6, 23, 0.5),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+}
+
+/* ---- Light theme — keep chips crisp and premium, not washed out ---------- */
+.pe-home[data-theme="light"] .pe-ico {
+  border-color: color-mix(in srgb, var(--c) 34%, var(--pe-border));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.75),
+    inset 0 0 0 1px color-mix(in srgb, var(--c) 12%, transparent),
+    0 10px 20px -12px color-mix(in srgb, var(--c) 45%, transparent);
+}
+
+.pe-home[data-theme="light"] .pe-ico-grad {
+  border-color: color-mix(in srgb, var(--c) 40%, transparent);
+  box-shadow:
+    0 14px 26px -12px color-mix(in srgb, var(--c) 55%, transparent),
+    0 2px 6px -2px rgba(15, 23, 42, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6),
+    inset 0 -10px 18px -12px color-mix(in srgb, var(--c) 28%, transparent),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.3);
+}
+
+.pe-home[data-theme="light"] .pe-card-hover:hover .pe-ico-grad,
+.pe-home[data-theme="light"] .pe-deploy-card:hover .pe-ico-grad {
+  box-shadow:
+    0 20px 32px -12px color-mix(in srgb, var(--c) 58%, transparent),
+    0 3px 8px -2px rgba(15, 23, 42, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7),
+    inset 0 -10px 18px -12px color-mix(in srgb, var(--c) 26%, transparent),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.34);
+}
+
+/* =============================================================================
+   NAVBAR
+   ========================================================================== */
+.pe-nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  transition: background 0.3s, border-color 0.3s, box-shadow 0.3s, backdrop-filter 0.3s;
+  border-bottom: 1px solid transparent;
+}
+
+.pe-nav.scrolled {
+  background: var(--pe-nav-bg);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border-bottom-color: var(--pe-border);
+  box-shadow: var(--pe-shadow-sm);
+}
+
+.pe-nav-inner {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 28px;
+  height: 72px;
+}
+
+/* Header brand lockup — petal mark + two-tone wordmark, optically balanced. */
+.pe-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 11px;
+  justify-self: start;
+  white-space: nowrap;
+  line-height: 1;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Petal mark: micro-scale + soft brand glow on hover so it reads alive/clickable.
+   The mark's SVG is overflow:visible, so scaling never clips its petal glow. */
+.pe-brand svg {
+  transition: transform 0.3s var(--pe-ease), filter 0.3s var(--pe-ease);
+}
+
+.pe-brand:hover svg {
+  transform: scale(1.07);
+  filter: drop-shadow(0 3px 12px rgba(99, 102, 241, 0.45));
+}
+
+.pe-brand:active svg {
+  transform: scale(1.02);
+}
+
+/* Wordmark: deliberate weight + tight tracking. "Petal" stays solid + theme-aware
+   (var(--pe-text)); "Edge" reuses the living brand gradient token (.pe-grad-text). */
+.pe-brand-name {
+  font-weight: 800;
+  font-size: 22px;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+  color: var(--pe-text);
+}
+
+.pe-brand-name .pe-grad-text {
+  padding-bottom: 1px;
+}
+
+/* keep "g" descender from clipping */
+@media (max-width: 380px) {
+  .pe-brand {
+    gap: 9px;
+  }
+
+  .pe-brand-name {
+    font-size: 19px;
+  }
+}
+
+.pe-brand-mark {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  background: var(--pe-gradient);
+  box-shadow: 0 6px 16px rgba(99, 102, 241, 0.4);
+}
+
+.pe-brand-mark svg {
+  width: 19px;
+  height: 19px;
+  color: #fff;
+}
+
+.pe-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  justify-content: center;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+}
+
+/* One box for every nav item, link or <button>: the flex line-box plus a fixed
+   height means the hover pill is identical whatever the element is, and the
+   button-only resets (font, background, border) live here so the dropdown
+   trigger needs no overrides that would outrank the shared :hover below. */
+.pe-nav-link {
+  display: inline-flex;
+  align-items: center;
+  height: 34px;
+  padding: 0 12px;
+  font-family: inherit;
+  font-size: 14.5px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: normal;
+  color: var(--pe-text-2);
+  background: transparent;
+  border: 0;
+  border-radius: 9px;
+  white-space: nowrap;
+  transition: color 0.18s var(--pe-ease), background 0.18s var(--pe-ease);
+}
+
+.pe-nav-link:hover {
+  color: var(--pe-text);
+  background: var(--pe-surface);
+}
+
+.pe-nav-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-self: end;
+}
+
+.pe-icon-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  background: transparent;
+  border: 1px solid var(--pe-border);
+  color: var(--pe-text-2);
+  transition: color 0.2s, background 0.2s, border-color 0.2s;
+}
+
+.pe-icon-btn:hover {
+  color: var(--pe-text);
+  background: var(--pe-surface);
+  border-color: var(--pe-border-strong);
+}
+
+.pe-icon-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+.pe-nav-login {
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--pe-text);
+  padding: 9px 14px;
+  border-radius: 10px;
+  transition: background 0.2s;
+}
+
+.pe-nav-login:hover {
+  background: var(--pe-surface);
+}
+
+.pe-burger {
+  display: none;
+}
+
+/* Mobile nav */
+.pe-mobile-panel {
+  display: none;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px;
+  margin: 0 16px 12px;
+  border-radius: var(--pe-radius);
+  background: var(--pe-nav-bg);
+  backdrop-filter: blur(18px);
+  border: 1px solid var(--pe-border);
+  position: relative;
+  z-index: 50;
+}
+
+.pe-mobile-panel a {
+  padding: 12px 14px;
+  border-radius: 10px;
+  font-weight: 500;
+  color: var(--pe-text-2);
+}
+
+.pe-mobile-panel a:hover {
+  background: var(--pe-surface);
+  color: var(--pe-text);
+}
+
+.pe-mobile-cta {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 6px 4px;
+}
+
+/* =============================================================================
+   HERO
+   ========================================================================== */
+.pe-hero {
+  padding: 140px 0 128px;
+  position: relative;
+  z-index: 2;
+}
+
+.pe-hero-grid {
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: var(--pe-col-gap);
+  align-items: center;
+}
+
+.pe-hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 500;
+  padding: 6px 14px 6px 7px;
+  border-radius: 100px;
+  margin-bottom: var(--pe-s8);
+  background: var(--pe-surface);
+  border: 1px solid var(--pe-border);
+  color: var(--pe-text-2);
+  backdrop-filter: blur(10px);
+  line-height: 1.2;
+}
+
+.pe-hero-badge b {
+  color: var(--pe-text);
+  font-weight: 600;
+}
+
+.pe-pill {
+  font-size: 15px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 100px;
+  color: #fff;
+  background: var(--pe-gradient);
+  letter-spacing: 0.02em;
+}
+
+.pe-h1 {
+  font-size: clamp(34px, 4.6vw, 54px);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+  max-width: 15ch;
+}
+
+/* --- Hero headline: one-time entrance (markup in HeroTitle.tsx) -----------
+   Two balanced lines; each phrase rises + fades on a ~200ms stagger, and the
+   final gradient phrase adds a soft L→R wipe. Transforms/opacity/mask only →
+   zero layout shift. Inherits every .pe-h1 type token above; only relaxes
+   max-width / line-height so the two lines sit balanced (no size change). */
+.pe-hero-title {
+  max-width: 24ch;
+  line-height: 1.12;
+}
+
+.pe-ht-line {
+  display: block;
+  white-space: nowrap;
+}
+
+.pe-ht-word {
+  display: inline-block;
+  opacity: 0;
+  transform: translate3d(0, 14px, 0);
+  transition:
+    opacity 0.5s var(--pe-ease),
+    transform 0.5s var(--pe-ease);
+  transition-delay: var(--d, 0ms);
+  will-change: opacity, transform;
+}
+
+.pe-hero-title.in .pe-ht-word {
+  opacity: 1;
+  transform: none;
+}
+
+/* Lead words share the same living gradient as the accent phrase, so the whole
+   headline reads as one continuous flowing gradient instead of flat text (which
+   looked too plain in both light and dark themes). The accent phrase (.pe-ht-wipe)
+   is excluded — it keeps its own nested .pe-grad-text. */
+.pe-ht-word:not(.pe-ht-wipe) {
+  background: linear-gradient(90deg, #8b5cf6, #6366f1, #3b82f6, #6366f1, #8b5cf6);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  animation: pe-grad-flow 6s linear infinite;
+}
+
+/* Soft left-to-right gradient wipe for the accent phrase. @property lets the
+   masked position tween; where unsupported it simply snaps to the final
+   (fully revealed) state — text still appears, just without the sweep. */
+@property --pe-wipe {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 0%;
+}
+
+.pe-ht-wipe {
+  --pe-wipe: -22%;
+  -webkit-mask-image: linear-gradient(90deg, #000 var(--pe-wipe), transparent calc(var(--pe-wipe) + 16%));
+  mask-image: linear-gradient(90deg, #000 var(--pe-wipe), transparent calc(var(--pe-wipe) + 16%));
+  transition:
+    opacity 0.5s var(--pe-ease),
+    transform 0.5s var(--pe-ease),
+    --pe-wipe 0.8s var(--pe-ease);
+  transition-delay: var(--d, 0ms);
+}
+
+.pe-hero-title.in .pe-ht-wipe {
+  --pe-wipe: 116%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  /* Belt-and-suspenders: even if the observer path is skipped, never hide. */
+  .pe-ht-word {
+    opacity: 1;
+    transform: none;
+    animation: none;
+  }
+
+  .pe-ht-wipe {
+    --pe-wipe: 116%;
+  }
+}
+
+.pe-home .pe-hero-sub {
+  margin-top: var(--pe-s5);
+  font-size: clamp(15px, 1.25vw, 17px);
+  font-weight: 400;
+  color: var(--pe-text-2);
+  max-width: 48ch;
+  line-height: 1.65;
+}
+
+/* Hero lede: the paragraph is a <p>, so the .pe-home p reset (spec 0,1,1)
+   would kill a bare .pe-lede margin — scope it under .pe-hero to win. */
+.pe-home .pe-hero .pe-lede {
+  margin-top: var(--pe-s6);
+}
+
+.pe-hero-cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--pe-s4);
+  margin-top: var(--pe-s8);
+}
+
+.pe-home ul.pe-trust {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--pe-s3) var(--pe-s6);
+  margin-top: var(--pe-s7);
+}
+
+.pe-trust li {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 16px;
+  color: var(--pe-text-2);
+}
+
+.pe-trust svg {
+  width: 16px;
+  height: 16px;
+  color: var(--pe-accent-2);
+}
+
+/* Orbit workflow */
+.pe-orbit-wrap {
+  position: relative;
+  aspect-ratio: 1;
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+/* --- Hero illustration backdrop (all decorative, behind the orbit) --------- */
+/* Radial glow — the strongest light on the page, seats the illustration. */
+.pe-orbit-aura {
+  position: absolute;
+  inset: -46%;
+  border-radius: 50%;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 50% 44%, var(--pe-glow-a), transparent 56%),
+    radial-gradient(circle at 38% 40%, var(--pe-glow-b), transparent 58%),
+    radial-gradient(circle at 66% 64%, var(--pe-glow-c), transparent 60%);
+  filter: blur(52px);
+  opacity: 0.9;
+}
+
+/* Blurred halo ring — a soft luminous band around the core. */
+.pe-orbit-halo {
+  position: absolute;
+  inset: 4%;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(circle, transparent 46%, var(--pe-glow-b) 62%, transparent 80%);
+  filter: blur(18px);
+  opacity: 0.75;
+}
+
+/* (Concentric rings, radiating spokes and sweeping arcs removed — the hero now
+   uses a static node graph with a drifting aurora backdrop; see ENERGY NETWORK
+   block below.) */
+
+/* Soft connecting lines core → nodes (SVG, inside the spinning layer). */
+.pe-orbit-lines {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  z-index: 1;
+}
+
+.pe-orbit-lines line {
+  stroke-dasharray: 1.4 2.6;
+  animation: pe-line-flow 2.4s linear infinite;
+}
+
+@keyframes pe-line-flow {
+  to {
+    stroke-dashoffset: -8;
+  }
+}
+
+/* Soft floor shadow so the illustration reads as lifted off the surface. */
+.pe-orbit-shadow {
+  position: absolute;
+  left: 50%;
+  bottom: 4%;
+  width: 62%;
+  height: 56px;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center, rgba(2, 4, 14, 0.6), transparent 70%);
+  filter: blur(22px);
+  opacity: 0.65;
+}
+
+.pe-home[data-theme="light"] .pe-orbit-shadow {
+  background: radial-gradient(ellipse at center, rgba(15, 23, 42, 0.22), transparent 70%);
+}
+
+/* Gradient glow pooled under the central chip. */
+.pe-orbit-core-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 380px;
+  height: 380px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 2;
+  /* Three layered hues — indigo core → violet mid → cyan falloff — for a rich,
+     smooth bloom behind the logo rather than a single flat glow. */
+  background: radial-gradient(circle, var(--pe-glow-a), var(--pe-glow-b) 38%, var(--pe-glow-c) 58%, transparent 76%);
+  filter: blur(44px);
+  opacity: 0.9;
+  animation: pe-core-glow-pulse 5s ease-in-out infinite;
+}
+
+@keyframes pe-core-glow-pulse {
+
+  0%,
+  100% {
+    opacity: 0.72;
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  50% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.14);
+  }
+}
+
+.pe-orbit-core {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 146px;
+  height: 146px;
+  border-radius: 36px;
+  display: grid;
+  place-items: center;
+  background: var(--pe-gradient);
+  background-size: 180% 180%;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.22),
+    inset 0 2px 3px rgba(255, 255, 255, 0.35),
+    inset 0 -10px 24px rgba(2, 4, 14, 0.35),
+    0 30px 72px rgba(99, 102, 241, 0.6);
+  animation: pe-core-pulse 5s ease-in-out infinite;
+  z-index: 3;
+}
+
+/* Rotating specular ring on the chip's edge — premium "energized" feel. */
+.pe-orbit-core-ring {
+  position: absolute;
+  inset: -4px;
+  border-radius: 40px;
+  padding: 2px;
+  pointer-events: none;
+  background: conic-gradient(from 0deg, transparent 0deg, rgba(255, 255, 255, 0.75) 55deg, transparent 130deg, transparent 360deg);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: pe-spin 6s linear infinite;
+}
+
+/* Static glass sheen on the chip — a diagonal top-left specular highlight plus
+   a faint inner base shade for depth. Painted above the gradient + rotating
+   ring but below the logo (z-index:1), so it lights the surface, not the mark. */
+.pe-orbit-core::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background:
+    linear-gradient(157deg, rgba(255, 255, 255, 0.45) 0%, rgba(255, 255, 255, 0.12) 24%, transparent 48%),
+    linear-gradient(0deg, rgba(2, 4, 14, 0.22), transparent 36%);
+  opacity: 0.9;
+}
+
+.pe-orbit-core svg {
+  width: 56px;
+  height: 56px;
+  color: #fff;
+  filter: drop-shadow(0 2px 4px rgba(2, 4, 14, 0.35));
+  z-index: 1;
+}
+
+/* Brand petal mark centered in the core (overrides the generic svg sizing). */
+.pe-orbit-core .pe-orbit-logo {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+}
+
+.pe-orbit-core .pe-orbit-logo svg {
+  width: 82px;
+  height: 82px;
+  filter: drop-shadow(0 3px 7px rgba(2, 4, 14, 0.4));
+}
+
+@keyframes pe-core-pulse {
+
+  0%,
+  100% {
+    background-position: 0% 50%;
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.22), inset 0 2px 3px rgba(255, 255, 255, 0.35), inset 0 -10px 24px rgba(2, 4, 14, 0.35), 0 30px 72px rgba(99, 102, 241, 0.55);
+  }
+
+  50% {
+    background-position: 100% 50%;
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.3), inset 0 2px 3px rgba(255, 255, 255, 0.4), inset 0 -10px 24px rgba(2, 4, 14, 0.4), 0 36px 92px rgba(139, 92, 246, 0.7);
+  }
+}
+
+.pe-orbit-spin {
+  position: absolute;
+  inset: 0;
+  animation: pe-spin 34s linear infinite;
+}
+
+.pe-orbit-slot {
+  position: absolute;
+  width: 122px;
+  margin: -26px 0 0 -61px;
+  /* centers node on its point */
+}
+
+.pe-orbit-node {
+  width: 100%;
+  animation: pe-spin-rev 34s linear infinite;
+  /* keeps card upright while it orbits */
+}
+
+.pe-node-card {
+  /* Each card inherits its icon's hue via --c (set inline in Hero.tsx), so the
+     border highlight, lift shadow and hover glow all read as one accent — the
+     grid feels like an engineered system rather than seven identical chips. */
+  --c: var(--pe-primary-2);
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 12px;
+  border-radius: 13px;
+  background: var(--pe-surface-solid);
+  border: 1px solid color-mix(in srgb, var(--c) 24%, var(--pe-border-strong));
+  box-shadow:
+    var(--pe-shadow-lg),
+    0 6px 18px color-mix(in srgb, var(--c) 15%, transparent),
+    /* faint colored lift */
+    0 0 0 1px rgba(255, 255, 255, 0.04) inset,
+    0 1px 0 rgba(255, 255, 255, 0.12) inset;
+  font-size: 12.5px;
+  font-weight: 600;
+  animation: pe-card-float 4.5s ease-in-out infinite;
+  transform-origin: center;
+  transition:
+    box-shadow 0.3s var(--pe-ease),
+    border-color 0.3s var(--pe-ease),
+    scale 0.3s var(--pe-ease);
+}
+
+/* Expanding energy field — a soft radial bloom tinted by the node's hue that
+   sits behind the card. Dormant (scaled down, invisible) until hover, then it
+   grows and lights up so the pointed-at node reads as "charged". */
+.pe-node-card::after {
+  content: "";
+  position: absolute;
+  inset: -18px;
+  z-index: -1;
+  border-radius: 22px;
+  pointer-events: none;
+  background: radial-gradient(circle,
+      color-mix(in srgb, var(--c) 42%, transparent) 0%,
+      color-mix(in srgb, var(--c) 16%, transparent) 45%,
+      transparent 72%);
+  opacity: 0;
+  transform: scale(0.7);
+  transition: opacity 0.35s var(--pe-ease), transform 0.35s var(--pe-ease);
+}
+
+.pe-node-card:hover {
+  /* `scale` (not `transform`) so it composes with the float animation, which
+     drives `translate` — a running animation would otherwise override any
+     `transform` set here and the card would never grow. */
+  scale: 1.22;
+  animation-play-state: paused;
+  /* hold the float so the node feels "grabbed" */
+  z-index: 3;
+  border-color: color-mix(in srgb, var(--c) 82%, transparent);
+  box-shadow:
+    var(--pe-shadow-lg),
+    0 10px 32px color-mix(in srgb, var(--c) 40%, transparent),
+    0 0 34px color-mix(in srgb, var(--c) 55%, transparent);
+}
+
+.pe-node-card:hover::after {
+  opacity: 1;
+  transform: scale(1.15);
+  animation: pe-node-charge 1.8s ease-in-out infinite;
+}
+
+@keyframes pe-node-charge {
+
+  0%,
+  100% {
+    transform: scale(1.1);
+    opacity: 0.85;
+  }
+
+  50% {
+    transform: scale(1.24);
+    opacity: 1;
+  }
+}
+
+/* Icon flares brighter while its node is charged. */
+.pe-node-card:hover .pe-node-ico {
+  box-shadow:
+    0 4px 14px color-mix(in srgb, var(--c) 70%, transparent),
+    0 0 16px color-mix(in srgb, var(--c) 60%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+/* Glass rim — a 1px gradient border, brightest at the top-left and tinted by
+   the icon hue. Masked to the border only (content-box excluded) so it lifts
+   the panel edge like real glass without ever washing the label. */
+.pe-node-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  pointer-events: none;
+  background: linear-gradient(150deg,
+      color-mix(in srgb, var(--c) 55%, rgba(255, 255, 255, 0.85)) 0%,
+      color-mix(in srgb, var(--c) 22%, transparent) 42%,
+      transparent 72%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0.85;
+}
+
+/* Gentle vertical bob so each card reads as floating (delay set per card). */
+@keyframes pe-card-float {
+
+  0%,
+  100% {
+    translate: 0 -3px;
+  }
+
+  50% {
+    translate: 0 3px;
+  }
+}
+
+/* Live status indicator — small pulsing green dot, top-right. */
+.pe-node-status {
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--pe-accent-2);
+  box-shadow: 0 0 0 2px var(--pe-surface-solid), 0 0 9px 1px color-mix(in srgb, var(--pe-accent-2) 80%, transparent);
+  animation: pe-dot-pulse 2.2s ease-in-out infinite;
+}
+
+@keyframes pe-dot-pulse {
+
+  0%,
+  100% {
+    opacity: 0.65;
+    transform: scale(0.9);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+.pe-node-ico {
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  flex: none;
+  color: #fff;
+  /* Soft colored drop + top specular so the chip reads as lit, matching --c. */
+  box-shadow: 0 3px 9px color-mix(in srgb, var(--c) 45%, transparent), inset 0 1px 0 rgba(255, 255, 255, 0.28);
+}
+
+.pe-node-ico svg {
+  width: 15px;
+  height: 15px;
+}
+
+@keyframes pe-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pe-spin-rev {
+  to {
+    transform: rotate(-360deg);
+  }
+}
+
+.pe-particle {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--pe-primary-2);
+  box-shadow: 0 0 10px 2px var(--pe-glow-a);
+  opacity: 0.8;
+  animation: pe-particle-float linear infinite;
+}
+
+@keyframes pe-particle-float {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 0;
+  }
+
+  15% {
+    opacity: 0.9;
+  }
+
+  85% {
+    opacity: 0.7;
+  }
+
+  100% {
+    transform: translateY(-120px) scale(0.4);
+    opacity: 0;
+  }
+}
+
+/* =============================================================================
+   ENERGY NETWORK — replaces the rotating ring/orbit with a stable node graph:
+   a drifting aurora backdrop + signal pulses that travel core → node.
+   (Defined after the base .pe-orbit rules so the overrides below win.)
+   ========================================================================== */
+/* Hold the graph still — base .pe-orbit-spin / -node rotate; these cancel it. */
+.pe-orbit-spin {
+  animation: none;
+}
+
+.pe-orbit-node {
+  animation: none;
+}
+
+/* Aurora / gradient-mesh backdrop — three softly drifting colour clouds. */
+.pe-aurora {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(46px);
+  opacity: 0.5;
+  will-change: transform;
+}
+
+.pe-aurora-1 {
+  inset: 4% 42% 48% 6%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--pe-primary-2) 70%, transparent), transparent 70%);
+  animation: pe-aurora-a 18s ease-in-out infinite;
+}
+
+.pe-aurora-2 {
+  inset: 42% 6% 8% 44%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--pe-secondary) 62%, transparent), transparent 70%);
+  animation: pe-aurora-b 22s ease-in-out infinite;
+}
+
+.pe-aurora-3 {
+  inset: 28% 28% 30% 30%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--pe-accent-2) 52%, transparent), transparent 68%);
+  animation: pe-aurora-c 26s ease-in-out infinite;
+}
+
+@keyframes pe-aurora-a {
+
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+
+  50% {
+    transform: translate(8%, 6%) scale(1.12);
+  }
+}
+
+@keyframes pe-aurora-b {
+
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1.05);
+  }
+
+  50% {
+    transform: translate(-7%, -5%) scale(0.95);
+  }
+}
+
+@keyframes pe-aurora-c {
+
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+
+  50% {
+    transform: translate(-5%, 7%) scale(1.10);
+  }
+}
+
+/* Signal pulse travelling from the core out to each node (a bright dash that
+   glides along the wire). Higher specificity than the base line-flow rule. */
+.pe-orbit-lines line.pe-signal {
+  stroke-dasharray: 9 91;
+  animation: pe-signal-travel 2.6s linear infinite;
+  filter: drop-shadow(0 0 1.2px color-mix(in srgb, var(--pe-primary-2) 85%, transparent));
+}
+
+@keyframes pe-signal-travel {
+  from {
+    stroke-dashoffset: 0;
+  }
+
+  to {
+    stroke-dashoffset: -100;
+  }
+}
+
+/* Respect reduced-motion — hold every hero animation still. */
+@media (prefers-reduced-motion: reduce) {
+
+  .pe-aurora,
+  .pe-orbit-core-glow,
+  .pe-orbit-core,
+  .pe-orbit-core-ring,
+  .pe-particle,
+  .pe-node-card,
+  .pe-node-card:hover::after,
+  .pe-node-status,
+  .pe-orbit-lines line {
+    animation: none !important;
+  }
+}
+
+/* =============================================================================
+   TRUSTED BY
+   ========================================================================== */
+.pe-trusted {
+  padding: 24px 0 8px;
+}
+
+.pe-logos {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+}
+
+.pe-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 11px;
+  padding: 11px 18px 11px 12px;
+  border-radius: 16px;
+  border: 1px solid var(--pe-border);
+  background: var(--pe-surface);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--pe-text-2);
+  transition: transform 0.3s var(--pe-ease), border-color 0.3s, box-shadow 0.3s, color 0.3s;
+}
+
+.pe-logo:hover {
+  transform: translateY(-3px);
+  color: var(--pe-text);
+  border-color: var(--pe-border-strong);
+  box-shadow: var(--pe-shadow-sm);
+}
+
+.pe-logo-ico {
+  --c: #6366f1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  flex-shrink: 0;
+  color: var(--c);
+  background: linear-gradient(150deg, color-mix(in srgb, var(--c) 22%, transparent), color-mix(in srgb, var(--c) 6%, transparent));
+  border: 1px solid color-mix(in srgb, var(--c) 28%, var(--pe-border));
+  transition: transform 0.3s var(--pe-ease);
+}
+
+.pe-logo:hover .pe-logo-ico {
+  transform: scale(1.08);
+}
+
+.pe-logo-ico svg {
+  width: 18px;
+  height: 18px;
+  stroke-width: 1.9;
+}
+
+/* =============================================================================
+   FEATURES
+   ========================================================================== */
+.pe-feat-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--pe-grid-gap);
+}
+
+.pe-feat-card {
+  flex: 1 1 300px;
+  max-width: 372px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--pe-s4);
+  padding: var(--pe-card-pad);
+}
+
+.pe-feat-card h3 {
+  font-size: 16.5px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+
+.pe-feat-card p {
+  font-size: 14px;
+  color: var(--pe-text-2);
+  line-height: 1.55;
+}
+
+/* =============================================================================
+   MODEL SHOWCASE
+   ========================================================================== */
+.pe-model-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--pe-grid-gap);
+}
+
+.pe-model-card {
+  padding: var(--pe-s6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--pe-s4);
+  overflow: hidden;
+}
+
+.pe-model-viz {
+  height: 130px;
+  border-radius: var(--pe-radius-sm);
+  position: relative;
+  overflow: hidden;
+  background-color: var(--pe-bg-3);
+  border: 1px solid var(--pe-border);
+  display: grid;
+  place-items: center;
+  background-image:
+    linear-gradient(var(--pe-border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--pe-border) 1px, transparent 1px);
+  background-size: 22px 22px;
+  box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.12);
+}
+
+/* Sweeping detection scan line */
+.pe-model-viz::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 44%;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(180deg, transparent, color-mix(in srgb, var(--pe-secondary) 22%, transparent), transparent);
+  transform: translateY(-120%);
+  animation: pe-scan 4s ease-in-out infinite;
+}
+
+.pe-home[data-theme="dark"] .pe-model-viz {
+  background-color: #0a0b1e;
+}
+
+.pe-model-card h3 {
+  font-size: 16px;
+  font-weight: 650;
+}
+
+.pe-model-card>p {
+  font-size: 13.5px;
+  color: var(--pe-text-2);
+}
+
+.pe-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: auto;
+}
+
+.pe-badge {
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 4px 9px;
+  border-radius: 8px;
+  background: var(--pe-surface);
+  border: 1px solid var(--pe-border);
+  color: var(--pe-text-2);
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.pe-badge svg {
+  width: 12px;
+  height: 12px;
+}
+
+.pe-badge.ok {
+  color: var(--pe-accent-2);
+}
+
+/* Mini viz elements */
+.pe-viz-bbox {
+  --c: var(--pe-accent-2);
+  position: absolute;
+  z-index: 3;
+  border-radius: 8px;
+  border: 1.5px solid color-mix(in srgb, var(--c) 45%, transparent);
+  background: color-mix(in srgb, var(--c) 12%, transparent);
+  box-shadow:
+    0 0 18px color-mix(in srgb, var(--c) 38%, transparent),
+    inset 0 0 22px color-mix(in srgb, var(--c) 14%, transparent);
+  animation: pe-box-pulse 2.6s ease-in-out infinite;
+}
+
+/* Bright corner brackets — detection-overlay look */
+.pe-viz-bbox::before {
+  content: "";
+  position: absolute;
+  inset: -1.5px;
+  border-radius: 8px;
+  pointer-events: none;
+  background:
+    linear-gradient(var(--c), var(--c)) 0 0 / 10px 2px no-repeat,
+    linear-gradient(var(--c), var(--c)) 0 0 / 2px 10px no-repeat,
+    linear-gradient(var(--c), var(--c)) 100% 0 / 10px 2px no-repeat,
+    linear-gradient(var(--c), var(--c)) 100% 0 / 2px 10px no-repeat,
+    linear-gradient(var(--c), var(--c)) 0 100% / 10px 2px no-repeat,
+    linear-gradient(var(--c), var(--c)) 0 100% / 2px 10px no-repeat,
+    linear-gradient(var(--c), var(--c)) 100% 100% / 10px 2px no-repeat,
+    linear-gradient(var(--c), var(--c)) 100% 100% / 2px 10px no-repeat;
+}
+
+.pe-viz-bbox::after {
+  content: attr(data-l);
+  position: absolute;
+  top: -18px;
+  left: -1.5px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .02em;
+  background: var(--c);
+  color: #071018;
+  padding: 2px 6px;
+  border-radius: 5px 5px 5px 0;
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--c) 45%, transparent);
+}
+
+.pe-viz-dot {
+  --c: var(--pe-secondary);
+  position: absolute;
+  z-index: 3;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: var(--c);
+  box-shadow: 0 0 12px var(--c);
+}
+
+/* Radar ping ring around centroids */
+.pe-viz-dot::after {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 1.5px solid color-mix(in srgb, var(--c) 60%, transparent);
+  animation: pe-dot-ring 2s ease-out infinite;
+}
+
+@keyframes pe-scan {
+  0% {
+    transform: translateY(-120%);
+    opacity: 0;
+  }
+
+  12% {
+    opacity: 1;
+  }
+
+  88% {
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateY(320%);
+    opacity: 0;
+  }
+}
+
+@keyframes pe-dot-ring {
+  0% {
+    transform: scale(.5);
+    opacity: .9;
+  }
+
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+
+@keyframes pe-box-pulse {
+
+  0%,
+  100% {
+    box-shadow: 0 0 14px color-mix(in srgb, var(--c) 30%, transparent), inset 0 0 18px color-mix(in srgb, var(--c) 10%, transparent);
+  }
+
+  50% {
+    box-shadow: 0 0 26px color-mix(in srgb, var(--c) 55%, transparent), inset 0 0 24px color-mix(in srgb, var(--c) 18%, transparent);
+  }
+}
+
+.pe-wave {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  height: 44px;
+}
+
+.pe-wave span {
+  width: 4px;
+  border-radius: 3px;
+  background: var(--pe-gradient);
+  animation: pe-wave 1.2s ease-in-out infinite;
+}
+
+@keyframes pe-wave {
+
+  0%,
+  100% {
+    height: 20%;
+  }
+
+  50% {
+    height: 100%;
+  }
+}
+
+.pe-grid-cells {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 5px;
+  width: 82px;
+}
+
+.pe-grid-cells i {
+  aspect-ratio: 1;
+  border-radius: 4px;
+  background: var(--pe-surface);
+  border: 1px solid var(--pe-border);
+}
+
+.pe-grid-cells i.on {
+  background: var(--pe-gradient);
+  border: none;
+}
+
+/* =============================================================================
+   MODELS PAGE — extended cards (title+icon, bullets, themed metric pill) and a
+   wide feature bar. Reuses the MODEL SHOWCASE card/viz/animation primitives;
+   each card is themed via its own --card-c neon accent.
+   ========================================================================== */
+.pe-models .pe-model-card {
+  --card-c: var(--pe-accent-2);
+  border-color: color-mix(in srgb, var(--card-c) 20%, var(--pe-border));
+}
+
+.pe-models .pe-model-viz {
+  border-color: color-mix(in srgb, var(--card-c) 22%, var(--pe-border));
+}
+
+/* Faint subject illustration behind the detection boxes */
+.pe-viz-subject {
+  position: absolute;
+  z-index: 1;
+  color: var(--pe-text-2);
+  opacity: 0.5;
+}
+
+.pe-home[data-theme="dark"] .pe-viz-subject {
+  opacity: 0.6;
+}
+
+/* Title row: colored square icon + heading */
+.pe-model-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.pe-model-ico {
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  color: var(--card-c);
+  background: color-mix(in srgb, var(--card-c) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--card-c) 30%, transparent);
+}
+
+.pe-model-ico svg {
+  width: 17px;
+  height: 17px;
+}
+
+/* Check-bullet list */
+.pe-home ul.pe-model-bullets {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.pe-model-bullets li {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--pe-text-2);
+  line-height: 1.4;
+}
+
+.pe-model-bullets li svg {
+  width: 14px;
+  height: 14px;
+  color: var(--card-c);
+  flex: none;
+  margin-top: 1px;
+}
+
+/* Filled/tinted metric pill in the card's theme color; row gets a hairline */
+.pe-models .pe-badges {
+  border-top: 1px solid var(--pe-border);
+  padding-top: var(--pe-s4);
+}
+
+.pe-badge.pe-metric {
+  color: var(--card-c);
+  background: color-mix(in srgb, var(--card-c) 15%, transparent);
+  border-color: color-mix(in srgb, var(--card-c) 38%, transparent);
+}
+
+.pe-badge.pe-metric svg {
+  color: var(--card-c);
+}
+
+/* Bottom feature bar — one wide panel, four themed columns */
+.pe-feature-bar {
+  margin-top: var(--pe-s9);
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--pe-s6);
+  padding: var(--pe-s7);
+  border-radius: var(--pe-radius-lg);
+  background: var(--pe-surface);
+  border: 1px solid var(--pe-border);
+  box-shadow: var(--pe-shadow-sm);
+}
+
+.pe-feature-col {
+  display: flex;
+  gap: var(--pe-s4);
+  align-items: flex-start;
+}
+
+.pe-feature-ico {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  color: var(--c);
+  background: color-mix(in srgb, var(--c) 15%, transparent);
+  border: 1px solid color-mix(in srgb, var(--c) 30%, transparent);
+}
+
+.pe-feature-ico svg {
+  width: 21px;
+  height: 21px;
+}
+
+.pe-home .pe-feature-col h4 {
+  font-size: 15px;
+  font-weight: 650;
+  margin-bottom: 4px;
+}
+
+.pe-feature-col p {
+  font-size: 13px;
+  color: var(--pe-text-2);
+  line-height: 1.5;
+}
+
+@media (max-width: 1000px) {
+  .pe-feature-bar {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--pe-s7);
+  }
+}
+
+@media (max-width: 640px) {
+  .pe-feature-bar {
+    grid-template-columns: 1fr;
+    padding: var(--pe-s6);
+  }
+}
+
+/* =============================================================================
+   #platform ("The Platform") — every text element +2px, scoped to this section
+   only. Base px value + 2 for each; clamps carry the bump across breakpoints so
+   nothing else on the site is affected. IDs out-specify the base class rules.
+   ============================================================================= */
+#platform .pe-eyebrow {
+  font-size: 15px;
+  /* base 13 + 2 */
+}
+
+#platform .pe-h2 {
+  font-size: clamp(32px, 4vw, 48px);
+  /* base clamp(30,_,46) + 2 */
+}
+
+#platform .pe-lede {
+  font-size: clamp(18px, 1.6vw, 21px);
+  /* base clamp(16,_,19) + 2 */
+}
+
+#platform .pe-feature-col h4 {
+  font-size: 17px;
+  /* base 15 + 2 */
+}
+
+#platform .pe-feature-col p {
+  font-size: 15px;
+  /* base 13 + 2 */
+}
+
+/* =============================================================================
+   FEATURES PAGE — tall left panel + 3×2 card grid, model-testing panel with
+   confusion matrix + mAP gauge, and the shared feature bar. Reuses the card,
+   icon and Reveal primitives; only new composition/decoration is defined here.
+   ========================================================================== */
+.pe-feat2-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--pe-grid-gap);
+  align-items: stretch;
+}
+
+/* Tall left panel — spans both card rows AND the testing row below, so column 1
+   stays filled all the way down to the "Model Testing & Evaluation" panel. */
+.pe-feat2-tall {
+  grid-column: 1;
+  grid-row: 1 / span 3;
+  display: flex;
+  flex-direction: column;
+  gap: var(--pe-s5);
+  padding: var(--pe-card-pad);
+  overflow: hidden;
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--pe-accent) 12%, var(--pe-surface)), var(--pe-surface));
+  border-color: color-mix(in srgb, var(--pe-accent) 22%, var(--pe-border));
+}
+
+.pe-feat2-tall-h {
+  font-size: clamp(20px, 2vw, 24px);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.pe-feat2-rule {
+  width: 46px;
+  height: 3px;
+  border-radius: 3px;
+  background: var(--pe-gradient);
+}
+
+.pe-feat2-tall-p {
+  font-size: 14px;
+  color: var(--pe-text-2);
+  line-height: 1.6;
+}
+
+/* Highlight list for the tall panel — check bullets consistent with the cards. */
+.pe-home ul.pe-feat2-tall-list {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pe-feat2-tall-list li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.3;
+  color: var(--pe-text);
+}
+
+.pe-feat2-tall-list li svg {
+  width: 16px;
+  height: 16px;
+  color: var(--pe-accent-2);
+  flex: none;
+}
+
+.pe-feat2-art {
+  width: 100%;
+  /* Fill the column width in the now-taller panel so the graphic scales up and
+     closes the vertical gap; margin-top:auto keeps it anchored to the bottom so
+     its baseline lines up with the testing panel across the row. */
+  max-width: 360px;
+  margin: auto auto 0;
+  display: block;
+  filter: drop-shadow(0 18px 40px rgba(79, 70, 229, 0.35));
+}
+
+/* Feature card — icon + title row, desc, hairline bullets, corner arrow */
+.pe-feat2-card {
+  position: relative;
+  padding: var(--pe-card-pad);
+  display: flex;
+  flex-direction: column;
+  gap: var(--pe-s4);
+}
+
+.pe-feat2-top {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.pe-feat2-top h3 {
+  font-size: 17px;
+  font-weight: 650;
+  line-height: 1.25;
+}
+
+.pe-feat2-desc {
+  font-size: 13.5px;
+  color: var(--pe-text-2);
+  line-height: 1.55;
+}
+
+.pe-home ul.pe-feat2-bullets {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  margin-top: auto;
+  padding-top: var(--pe-s4);
+  border-top: 1px solid var(--pe-border);
+}
+
+.pe-feat2-bullets li {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 13.5px;
+  color: var(--pe-text-2);
+}
+
+.pe-feat2-bullets li svg {
+  width: 15px;
+  height: 15px;
+  color: var(--pe-accent-2);
+  flex: none;
+}
+
+.pe-feat2-arrow {
+  position: absolute;
+  right: var(--pe-card-pad);
+  bottom: var(--pe-card-pad);
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  display: grid;
+  place-items: center;
+  color: var(--pe-text-3);
+  border: 1px solid var(--pe-border);
+  background: var(--pe-surface);
+  transition: transform 0.3s var(--pe-ease), color 0.3s, border-color 0.3s;
+}
+
+.pe-feat2-arrow svg {
+  width: 15px;
+  height: 15px;
+}
+
+.pe-feat2-card:hover .pe-feat2-arrow {
+  color: var(--pe-text);
+  border-color: var(--pe-border-strong);
+  transform: translateX(3px);
+}
+
+/* Model Testing & Evaluation — spans the feature columns */
+.pe-feat2-test {
+  grid-column: 2 / -1;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: var(--pe-s8);
+  align-items: center;
+  padding: var(--pe-card-pad);
+}
+
+.pe-test-left {
+  display: flex;
+  flex-direction: column;
+  gap: var(--pe-s4);
+}
+
+.pe-test-left h3 {
+  font-size: 19px;
+  font-weight: 650;
+}
+
+.pe-test-left>p {
+  font-size: 14px;
+  color: var(--pe-text-2);
+  line-height: 1.55;
+  max-width: 42ch;
+}
+
+.pe-test-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--pe-s5);
+  margin-top: var(--pe-s2);
+}
+
+.pe-test-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--pe-text-2);
+}
+
+.pe-test-chip svg {
+  width: 15px;
+  height: 15px;
+  color: var(--pe-primary-2);
+}
+
+.pe-test-right {
+  display: flex;
+  gap: var(--pe-s7);
+  align-items: center;
+}
+
+.pe-cm-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.pe-cm-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--pe-text-2);
+}
+
+.pe-cm3 {
+  display: grid;
+  grid-template-columns: repeat(3, 44px);
+  gap: 5px;
+}
+
+.pe-cm3 i {
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--pe-text-3);
+  background: color-mix(in srgb, var(--pe-accent) 9%, transparent);
+  border: 1px solid var(--pe-border);
+}
+
+.pe-cm3 i.on {
+  color: #fff;
+  border-color: transparent;
+  background: linear-gradient(150deg, color-mix(in srgb, var(--pe-primary-2) 92%, #fff), var(--pe-primary));
+  box-shadow: 0 6px 16px color-mix(in srgb, var(--pe-primary) 40%, transparent);
+}
+
+.pe-gauge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.pe-gauge-cap {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--pe-text-2);
+}
+
+.pe-gauge-ring {
+  position: relative;
+  width: 108px;
+  height: 108px;
+  display: grid;
+  place-items: center;
+}
+
+.pe-gauge-svg {
+  width: 108px;
+  height: 108px;
+}
+
+.pe-gauge-track {
+  fill: none;
+  stroke: var(--pe-border);
+  stroke-width: 10;
+}
+
+.pe-gauge-prog {
+  fill: none;
+  stroke: url(#peGaugeRing);
+  stroke-width: 10;
+  stroke-linecap: round;
+}
+
+.pe-gauge-val {
+  position: absolute;
+  font-size: 24px;
+  font-weight: 750;
+  letter-spacing: -0.02em;
+  color: var(--pe-text);
+}
+
+.pe-gauge-label {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--pe-accent-2);
+}
+
+.pe-ico-txt {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 12px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -0.02em;
+}
+
+@media (max-width: 1000px) {
+  .pe-feat2-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .pe-feat2-tall {
+    grid-column: 1 / -1;
+    grid-row: auto;
+  }
+
+  .pe-feat2-art {
+    max-width: 260px;
+  }
+
+  .pe-feat2-test {
+    grid-column: 1 / -1;
+    grid-template-columns: 1fr;
+    gap: var(--pe-s6);
+  }
+
+  .pe-test-right {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 640px) {
+  .pe-feat2-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .pe-test-right {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--pe-s6);
+  }
+}
+
+/* Section 2 — Deploy Anywhere: distinct purple wash + faint blueprint grid */
+.pe-deploy2 {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.pe-deploy2::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  background:
+    radial-gradient(1200px 700px at 85% -10%, color-mix(in srgb, var(--pe-accent) 26%, transparent), transparent 60%),
+    linear-gradient(160deg, color-mix(in srgb, var(--pe-accent) 20%, transparent), color-mix(in srgb, var(--pe-primary) 15%, transparent) 55%, transparent 100%);
+}
+
+.pe-deploy2::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.55;
+  background-image:
+    linear-gradient(var(--pe-grid-major) 1px, transparent 1px),
+    linear-gradient(90deg, var(--pe-grid-major) 1px, transparent 1px);
+  background-size: 42px 42px;
+  -webkit-mask-image: radial-gradient(80% 70% at 50% 40%, #000 30%, transparent 80%);
+  mask-image: radial-gradient(80% 70% at 50% 40%, #000 30%, transparent 80%);
+}
+
+/* =============================================================================
+   DASHBOARD SHOWCASE
+   ========================================================================== */
+.pe-dash-grid {
+  display: grid;
+  grid-template-columns: 0.82fr 1.18fr;
+  gap: var(--pe-col-gap);
+  align-items: start;
+}
+
+.pe-home ul.pe-dash-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--pe-s7);
+  margin-top: var(--pe-s10);
+}
+
+.pe-dash-item {
+  display: flex;
+  gap: var(--pe-s4);
+  align-items: flex-start;
+}
+
+.pe-dash-item .pe-ico {
+  width: 40px;
+  height: 40px;
+  border-radius: 11px;
+}
+
+.pe-dash-item h4 {
+  font-size: 17.5px;
+  font-weight: 650;
+  margin-bottom: var(--pe-s2);
+  line-height: 1.3;
+}
+
+.pe-dash-item p {
+  font-size: 15.5px;
+  color: var(--pe-text-2);
+  line-height: 1.55;
+}
+
+/* ---- Product dashboard mock ---------------------------------------------
+   A coded "screenshot" of the shipped PetalEdge app. Local --dm-* tokens mirror
+   the product's own --app-* palette (globals.css: surface #111827, border
+   #1f2937/#374151, text #f3f4f6/#9ca3af/#6b7280) so the mock stays a dark
+   product screenshot in both marketing themes — consistent with the real UI. */
+.pe-dash-mock {
+  --dm-surface: #111827;
+  /* --app-surface        */
+  --dm-surface-2: #161f33;
+  /* elevated panel top   */
+  --dm-border: #1f2937;
+  /* --app-border         */
+  --dm-border-2: #374151;
+  /* --app-border-strong  */
+  --dm-text: #f3f4f6;
+  /* --app-text           */
+  --dm-muted: #9ca3af;
+  /* --app-text-muted     */
+  --dm-soft: #6b7280;
+  /* --app-text-soft      */
+  --dm-indigo: #6366f1;
+  --dm-violet: #8b5cf6;
+  --dm-emerald: #10b981;
+  --dm-teal: #14b8a6;
+
+  position: relative;
+  isolation: isolate;
+  border-radius: var(--pe-radius-lg);
+  overflow: hidden;
+  padding: 10px 12px 14px;
+  background:
+    radial-gradient(120% 78% at 50% -8%, rgba(99, 102, 241, 0.14), transparent 60%),
+    linear-gradient(180deg, #0c1120 0%, #080b16 100%);
+  border: 1px solid var(--dm-border-2);
+  box-shadow: var(--pe-shadow-lg), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* subtle product-grid backdrop, faded toward the edges */
+.pe-dash-mock::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.028) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.028) 1px, transparent 1px);
+  background-size: 26px 26px;
+  -webkit-mask: radial-gradient(120% 100% at 50% 0%, #000, transparent 78%);
+  mask: radial-gradient(120% 100% at 50% 0%, #000, transparent 78%);
+}
+
+.pe-home[data-theme="light"] .pe-dash-mock {
+  box-shadow: 0 40px 90px rgba(15, 23, 42, 0.24);
+}
+
+/* macOS chrome */
+.pe-dash-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 4px 12px;
+}
+
+.pe-dash-dots {
+  display: flex;
+  gap: 6px;
+}
+
+.pe-dash-bar i {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  display: block;
+}
+
+.pe-dash-url {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 24px;
+  padding: 0 12px;
+  max-width: 62%;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid var(--dm-border);
+  font-family: "JetBrains Mono", monospace;
+  font-size: 11.5px;
+  color: var(--dm-muted);
+}
+
+.pe-dash-url svg {
+  width: 11px;
+  height: 11px;
+  color: var(--dm-emerald);
+  opacity: 0.85;
+}
+
+.pe-dash-body {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+/* layered card: hairline border, soft top-highlight, subtle depth */
+.pe-dm-panel {
+  position: relative;
+  grid-column: span 1;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0) 42%), var(--dm-surface);
+  border: 1px solid var(--dm-border);
+  border-radius: 16px;
+  padding: 14px 15px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.pe-dm-panel.wide {
+  grid-column: 1 / -1;
+}
+
+/* card header: uppercase eyebrow + optional right-side value */
+.pe-dm-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.pe-dm-head.compact {
+  align-items: center;
+}
+
+.pe-dm-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: var(--dm-soft);
+}
+
+.pe-dm-eyebrow svg {
+  width: 12px;
+  height: 12px;
+  color: var(--dm-indigo);
+  opacity: 0.9;
+}
+
+.pe-dm-value {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-top: 8px;
+  font-size: 27px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--dm-text);
+  font-variant-numeric: tabular-nums;
+}
+
+.pe-dm-unit {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--dm-muted);
+  margin-left: -4px;
+}
+
+.pe-dm-num {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--dm-text);
+  font-variant-numeric: tabular-nums;
+}
+
+.pe-dm-num.muted {
+  color: var(--dm-soft);
+}
+
+/* delta indicator */
+.pe-dm-delta {
+  display: inline-flex;
+  align-items: center;
+  gap: 1px;
+  font-size: 11px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  padding: 2px 7px 2px 4px;
+  border-radius: 999px;
+  background: rgba(16, 185, 129, 0.14);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.24);
+}
+
+.pe-dm-delta svg {
+  width: 11px;
+  height: 11px;
+}
+
+.pe-dm-delta.down {
+  background: rgba(244, 63, 94, 0.14);
+  color: #fb7185;
+  border-color: rgba(244, 63, 94, 0.24);
+}
+
+/* status pills — live dot + tinted capsule (trained / labeling) */
+.pe-dm-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  justify-self: start;
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: capitalize;
+  padding: 3px 10px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.pe-dm-pill::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 0 3px color-mix(in srgb, currentColor 22%, transparent);
+}
+
+.pe-dm-pill.trained {
+  color: #34d399;
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.26);
+}
+
+.pe-dm-pill.labeling {
+  color: #a5b4fc;
+  background: rgba(99, 102, 241, 0.14);
+  border: 1px solid rgba(99, 102, 241, 0.28);
+}
+
+/* accuracy sparkline: gradient fill + gradient stroke + glowing end point */
+.pe-spark-wrap {
+  position: relative;
+}
+
+.pe-spark {
+  width: 100%;
+  height: 60px;
+  display: block;
+  overflow: visible;
+}
+
+.pe-spark .grid {
+  stroke: rgba(255, 255, 255, 0.05);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.pe-spark path.area {
+  fill: url(#peSparkFill);
+}
+
+.pe-spark path.line {
+  fill: none;
+  stroke: url(#peSparkLine);
+  stroke-width: 2.25;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+  filter: drop-shadow(0 3px 6px rgba(99, 102, 241, 0.35));
+}
+
+.pe-spark-end {
+  position: absolute;
+  top: 1px;
+  right: 0;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.9), 0 0 12px 2px rgba(99, 102, 241, 0.65);
+}
+
+/* GPU bars: faint capacity rail + rounded-cap gradient fills, last bar hot */
+.pe-dm-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  height: 64px;
+}
+
+.pe-dm-bars i {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+  background: rgba(255, 255, 255, 0.045);
+  border-radius: 5px;
+}
+
+.pe-dm-bars i span {
+  display: block;
+  width: 100%;
+  border-radius: 5px;
+  background: linear-gradient(180deg, #818cf8, #6366f1 55%, #7c3aed);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+.pe-dm-bars i.hot span {
+  background: linear-gradient(180deg, #a78bfa, #8b5cf6 55%, #6d28d9);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3), 0 0 12px rgba(139, 92, 246, 0.5);
+}
+
+.pe-dm-foot {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 12px;
+  font-size: 9.5px;
+  letter-spacing: 0.04em;
+  color: var(--dm-soft);
+  font-variant-numeric: tabular-nums;
+}
+
+/* confusion matrix: labeled axes + intensity-graded cells + legend */
+.pe-cm {
+  display: grid;
+  grid-template-columns: 15px repeat(4, 1fr);
+  gap: 4px;
+  align-items: center;
+}
+
+.pe-cm-cell.head {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--dm-soft);
+  text-align: center;
+}
+
+.pe-cm i {
+  aspect-ratio: 1;
+  border-radius: 6px;
+  display: grid;
+  place-items: center;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10.5px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.pe-cm i.on {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.16);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+.pe-cm i.off {
+  color: var(--dm-soft);
+}
+
+.pe-cm-legend {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 10px;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--dm-soft);
+}
+
+.pe-cm-legend i {
+  flex: 1;
+  height: 5px;
+  border-radius: 3px;
+  background: linear-gradient(90deg, rgba(139, 92, 246, 0.1), rgba(99, 102, 241, 0.95));
+}
+
+/* datasets table: header row + name/dot, count, progress, status pill */
+.pe-dm-table {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.pe-dm-row {
+  display: grid;
+  grid-template-columns: 1.5fr 0.7fr 1fr auto;
+  gap: 10px;
+  align-items: center;
+  font-size: 12px;
+}
+
+.pe-dm-row.head {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--dm-soft);
+  padding-bottom: 2px;
+  border-bottom: 1px solid var(--dm-border);
+  margin-bottom: 1px;
+}
+
+.pe-dm-row .cell {
+  color: var(--dm-muted);
+  font-family: "JetBrains Mono", monospace;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pe-dm-row .cell.name {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #cdd3ea;
+}
+
+.pe-dm-row .cell.name .dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  box-shadow: 0 0 7px 0 currentColor;
+  opacity: 0.95;
+}
+
+.pe-dm-row .cell.num {
+  color: var(--dm-soft);
+  font-variant-numeric: tabular-nums;
+}
+
+.pe-dm-bar-mini {
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  overflow: hidden;
+}
+
+.pe-dm-bar-mini i {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #14b8a6, #6366f1);
+  box-shadow: 0 0 8px rgba(99, 102, 241, 0.4);
+}
+
+.pe-dm-bar-mini i.b {
+  background: linear-gradient(90deg, #818cf8, #8b5cf6);
+  box-shadow: 0 0 8px rgba(139, 92, 246, 0.4);
+}
+
+/* Mock stays legible once the body stacks to one column on small screens. */
+@media (max-width: 560px) {
+  .pe-dm-value {
+    font-size: 23px;
+  }
+
+  .pe-dm-row {
+    grid-template-columns: 1.4fr 1fr auto;
+    gap: 8px;
+  }
+
+  .pe-dm-row .cell.num,
+  .pe-dm-row.head span:nth-child(2) {
+    display: none;
+  }
+}
+
+/* =============================================================================
+   DEPLOY ANYWHERE
+   ========================================================================== */
+.pe-deploy-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--pe-grid-gap);
+}
+
+.pe-deploy-card {
+  padding: var(--pe-card-pad);
+  display: flex;
+  flex-direction: column;
+  gap: var(--pe-s4);
+  position: relative;
+  overflow: hidden;
+}
+
+.pe-deploy-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  opacity: 0;
+  background: radial-gradient(400px circle at var(--mx, 50%) var(--my, 50%), color-mix(in srgb, var(--c, #6366f1) 22%, transparent), transparent 65%);
+  transition: opacity 0.4s;
+  pointer-events: none;
+}
+
+.pe-deploy-card:hover::after {
+  opacity: 1;
+}
+
+.pe-deploy-card:hover {
+  border-color: color-mix(in srgb, var(--c, #6366f1) 55%, transparent);
+}
+
+.pe-deploy-card h3 {
+  font-size: 17px;
+  font-weight: 650;
+}
+
+.pe-deploy-card p {
+  font-size: 13.5px;
+  color: var(--pe-text-2);
+}
+
+.pe-deploy-meta {
+  margin-top: auto;
+  font-size: 12px;
+  font-family: "JetBrains Mono", monospace;
+  color: var(--pe-text-3);
+}
+
+/* =============================================================================
+   STATS
+   ========================================================================== */
+.pe-stats-wrap {
+  padding: var(--pe-s9);
+  border-radius: var(--pe-radius-lg);
+  background: var(--pe-gradient-soft);
+  border: 1px solid var(--pe-border);
+  position: relative;
+  overflow: hidden;
+}
+
+.pe-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: var(--pe-s6);
+  text-align: center;
+  position: relative;
+  z-index: 2;
+}
+
+.pe-stat-num {
+  font-size: clamp(30px, 3.4vw, 44px);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.pe-stat-label {
+  font-size: 14px;
+  color: var(--pe-text-2);
+  margin-top: 4px;
+}
+
+.pe-stat-div {
+  width: 1px;
+  background: var(--pe-border);
+}
+
+/* =============================================================================
+   WHY / COMPARISON
+   ========================================================================== */
+.pe-why-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--pe-grid-gap);
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.pe-why-card {
+  padding: var(--pe-s7);
+}
+
+.pe-why-card.pe-hi {
+  border-color: var(--pe-primary-2);
+  box-shadow: 0 0 0 1px var(--pe-primary-2), var(--pe-shadow);
+}
+
+.pe-why-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: var(--pe-s6);
+}
+
+.pe-why-head h3 {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.pe-why-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 0;
+  border-top: 1px solid var(--pe-border);
+  font-size: 14.5px;
+}
+
+.pe-why-row:first-of-type {
+  border-top: none;
+}
+
+.pe-why-row svg {
+  width: 19px;
+  height: 19px;
+  flex: none;
+}
+
+.pe-why-row.yes svg {
+  color: var(--pe-accent-2);
+}
+
+.pe-why-row.no {
+  color: var(--pe-text-3);
+}
+
+.pe-why-row.no svg {
+  color: var(--pe-text-3);
+  opacity: 0.6;
+}
+
+.pe-tag-soft {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 100px;
+  margin-left: auto;
+}
+
+.pe-tag-soft.g {
+  background: var(--pe-gradient);
+  color: #fff;
+}
+
+.pe-tag-soft.m {
+  background: var(--pe-surface);
+  border: 1px solid var(--pe-border);
+  color: var(--pe-text-3);
+}
+
+/* =============================================================================
+   TESTIMONIALS
+   ========================================================================== */
+.pe-tst-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--pe-grid-gap);
+}
+
+.pe-tst-card {
+  padding: var(--pe-card-pad);
+  display: flex;
+  flex-direction: column;
+  gap: var(--pe-s5);
+}
+
+.pe-stars {
+  display: flex;
+  gap: 3px;
+  color: #f5b301;
+}
+
+.pe-stars svg {
+  width: 17px;
+  height: 17px;
+  fill: currentColor;
+}
+
+.pe-tst-quote {
+  font-size: 15px;
+  color: var(--pe-text);
+  line-height: 1.6;
+  flex: 1;
+}
+
+.pe-tst-who {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.pe-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  color: #fff;
+  font-size: 15px;
+  flex: none;
+}
+
+.pe-tst-who h4 {
+  font-size: 14.5px;
+  font-weight: 650;
+}
+
+.pe-tst-who p {
+  font-size: 13px;
+  color: var(--pe-text-3);
+}
+
+/* =============================================================================
+   PRICING
+   ========================================================================== */
+.pe-price-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--pe-grid-gap);
+  align-items: stretch;
+}
+
+.pe-price-card {
+  padding: var(--pe-s7);
+  display: flex;
+  flex-direction: column;
+}
+
+.pe-price-card.pe-hi {
+  border: 1.5px solid transparent;
+  background:
+    linear-gradient(var(--pe-surface-solid), var(--pe-surface-solid)) padding-box,
+    var(--pe-gradient) border-box;
+  transform: scale(1.03);
+  z-index: 2;
+}
+
+.pe-price-tag {
+  position: absolute;
+  top: -13px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #fff;
+  background: var(--pe-gradient);
+  padding: 5px 14px;
+  border-radius: 100px;
+  box-shadow: 0 6px 16px rgba(99, 102, 241, 0.4);
+}
+
+.pe-price-name {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.pe-price-desc {
+  font-size: 13.5px;
+  color: var(--pe-text-2);
+  margin-top: 6px;
+  min-height: 38px;
+}
+
+.pe-price-amt {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin: 20px 0 22px;
+}
+
+.pe-price-amt .n {
+  font-size: 44px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.pe-price-amt .p {
+  font-size: 14px;
+  color: var(--pe-text-3);
+}
+
+.pe-price-feats {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 26px;
+}
+
+.pe-price-feats li {
+  display: flex;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--pe-text-2);
+  align-items: flex-start;
+}
+
+.pe-price-feats svg {
+  width: 17px;
+  height: 17px;
+  color: var(--pe-accent-2);
+  flex: none;
+  margin-top: 1px;
+}
+
+.pe-price-card .pe-btn {
+  margin-top: auto;
+  width: 100%;
+}
+
+/* Reassurance strip — one wide panel below the plan grid, four columns. */
+.pe-price-bar {
+  margin-top: var(--pe-s8);
+  padding: var(--pe-s7) var(--pe-s8);
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--pe-s7);
+}
+
+.pe-price-bar-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--pe-s4);
+}
+
+.pe-price-bar-item .pe-ico {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+}
+
+.pe-price-bar-item h4 {
+  font-size: 15px;
+  font-weight: 650;
+  margin-bottom: var(--pe-s1);
+  line-height: 1.3;
+}
+
+.pe-price-bar-item p {
+  font-size: 13px;
+  color: var(--pe-text-2);
+  line-height: 1.5;
+}
+
+/* =============================================================================
+   FAQ
+   ========================================================================== */
+.pe-faq-list {
+  max-width: 760px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--pe-s3);
+}
+
+.pe-faq-item {
+  padding: 0 24px;
+  overflow: hidden;
+}
+
+.pe-faq-q {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  background: none;
+  border: none;
+  color: var(--pe-text);
+  text-align: left;
+  font-size: 16.5px;
+  font-weight: 600;
+  padding: 22px 0;
+}
+
+.pe-faq-chev {
+  transition: transform 0.35s var(--pe-ease);
+  color: var(--pe-primary-2);
+  flex: none;
+}
+
+.pe-faq-chev svg {
+  width: 20px;
+  height: 20px;
+}
+
+.pe-faq-item.open .pe-faq-chev {
+  transform: rotate(45deg);
+}
+
+.pe-faq-a {
+  max-height: 0;
+  opacity: 0;
+  transition: max-height 0.4s var(--pe-ease), opacity 0.3s, padding 0.4s;
+}
+
+.pe-faq-item.open .pe-faq-a {
+  max-height: 260px;
+  opacity: 1;
+  padding-bottom: 22px;
+}
+
+.pe-faq-a p {
+  font-size: 15px;
+  color: var(--pe-text-2);
+  line-height: 1.6;
+}
+
+/* =============================================================================
+   FINAL CTA
+   ========================================================================== */
+.pe-final {
+  position: relative;
+  z-index: 2;
+  padding: 0 var(--pe-gutter) var(--pe-section-y);
+}
+
+.pe-final-inner {
+  max-width: var(--pe-maxw);
+  margin: 0 auto;
+  padding: var(--pe-s11) var(--pe-s9);
+  text-align: center;
+  border-radius: var(--pe-radius-lg);
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(120deg, #4f46e5, #7c3aed 52%, #06b6d4);
+  box-shadow: 0 40px 100px rgba(79, 70, 229, 0.5);
+}
+
+.pe-final-inner::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.22), transparent 45%),
+    radial-gradient(circle at 80% 80%, rgba(6, 182, 212, 0.35), transparent 45%);
+}
+
+.pe-final h2 {
+  position: relative;
+  font-size: clamp(30px, 4.4vw, 50px);
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -0.03em;
+  line-height: 1.06;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.pe-final p {
+  position: relative;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 18px;
+  margin-top: 18px;
+}
+
+.pe-final-cta {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  justify-content: center;
+  margin-top: 34px;
+}
+
+.pe-final .pe-btn-primary {
+  background: #fff;
+  color: #4f46e5;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.pe-final .pe-btn-primary:hover {
+  background: #f4f4ff;
+}
+
+.pe-final .pe-btn-ghost {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.4);
+  color: #fff;
+  backdrop-filter: blur(8px);
+}
+
+.pe-final .pe-btn-ghost:hover {
+  background: rgba(255, 255, 255, 0.24);
+}
+
+.pe-final-particle {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.85);
+  animation: pe-particle-float linear infinite;
+}
+
+/* =============================================================================
+   FOOTER
+   ========================================================================== */
+.pe-footer {
+  position: relative;
+  z-index: 2;
+  border-top: 1px solid var(--pe-border);
+  padding: var(--pe-s10) 0 var(--pe-s7);
+}
+
+.pe-foot-grid {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr 1fr 1fr;
+  gap: var(--pe-s8);
+}
+
+.pe-foot-grid-compact {
+  grid-template-columns: minmax(260px, 380px) minmax(260px, 380px);
+  justify-content: space-between;
+  max-width: 760px;
+  margin: 0 auto;
+  align-items: start;
+}
+
+.pe-footer .pe-brand {
+  font-size: 19px;
+}
+
+.pe-foot-brand p {
+  font-size: 17px;
+  color: var(--pe-text-2);
+  margin-top: 16px;
+  max-width: 280px;
+  line-height: 1.6;
+}
+
+.pe-foot-social {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.pe-foot-col h4 {
+  font-size: 16px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--pe-text-3);
+  margin-bottom: 16px;
+}
+
+.pe-foot-col a {
+  display: block;
+  font-size: 17px;
+  color: var(--pe-text-2);
+  padding: 6px 0;
+  transition: color 0.2s;
+}
+
+.pe-foot-col a:hover {
+  color: var(--pe-text);
+}
+
+/* Footer contact column — replaces the old "Company" links. */
+.pe-home .pe-foot-contact p.pe-foot-contact-office {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--pe-text);
+  margin: 0 0 12px;
+}
+
+.pe-foot-contact .pe-foot-contact-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 17px;
+  color: var(--pe-text-2);
+  line-height: 1.5;
+  padding: 6px 0;
+  transition: color 0.2s;
+}
+
+.pe-home .pe-foot-contact p.pe-foot-contact-item {
+  margin: 0;
+}
+
+.pe-foot-contact a.pe-foot-contact-item:hover {
+  color: var(--pe-text);
+}
+
+.pe-foot-contact .pe-foot-contact-item svg {
+  width: 16px;
+  height: 16px;
+  flex: none;
+  margin-top: 2px;
+  color: var(--pe-primary-2);
+}
+
+.pe-foot-bottom {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: var(--pe-s9);
+  padding-top: var(--pe-s6);
+  border-top: 1px solid var(--pe-border);
+  font-size: 16.5px;
+  color: var(--pe-text-3);
+}
+
+/* =============================================================================
+   SCROLL REVEAL
+   ========================================================================== */
+.pe-reveal {
+  opacity: 0;
+  transform: translateY(26px);
+  transition: opacity 0.7s var(--pe-ease), transform 0.7s var(--pe-ease);
+}
+
+.pe-reveal.in {
+  opacity: 1;
+  transform: none;
+}
+
+/* =============================================================================
+   RESPONSIVE
+   ========================================================================== */
+@media (max-width: 1000px) {
+
+  /* Tablet — pull the rhythm in one notch so sections stay generous but fit. */
+  .pe-home {
+    --pe-section-y: var(--pe-s11);
+    --pe-head-gap: var(--pe-s9);
+    --pe-col-gap: var(--pe-s8);
+  }
+
+  .pe-hero {
+    padding: 100px 0 96px;
+  }
+
+  .pe-hero-grid {
+    grid-template-columns: 1fr;
+    gap: var(--pe-s8);
+    text-align: center;
+  }
+
+  .pe-home .pe-h1 {
+    font-size: clamp(32px, 6vw, 46px);
+    max-width: 20ch;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* Centered + narrower column — let the phrases wrap naturally. */
+  .pe-ht-line {
+    white-space: normal;
+  }
+
+  .pe-home .pe-hero-sub {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .pe-hero-cta {
+    justify-content: center;
+  }
+
+  .pe-home ul.pe-trust {
+    justify-content: center;
+    margin-top: var(--pe-s7);
+  }
+
+  .pe-orbit-wrap {
+    max-width: 400px;
+  }
+
+  .pe-dash-grid {
+    grid-template-columns: 1fr;
+    gap: var(--pe-s7);
+  }
+
+  .pe-feat-grid,
+  .pe-model-grid,
+  .pe-deploy-grid,
+  .pe-tst-grid,
+  .pe-price-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .pe-price-bar {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .pe-foot-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .pe-foot-brand {
+    grid-column: 1 / -1;
+  }
+
+  /* Compact footer has only brand + contact — keep them side by side and stop
+     the brand from spanning the full row (which drops contact onto a new line
+     and leaves an empty half-column beside it). */
+  .pe-foot-grid-compact {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    max-width: 640px;
+    gap: var(--pe-s7);
+  }
+
+  .pe-foot-grid-compact .pe-foot-brand {
+    grid-column: auto;
+  }
+
+  .pe-price-card.pe-hi {
+    transform: none;
+  }
+}
+
+/* Collapse the inline nav into the mobile menu BEFORE the links can overflow /
+   wrap the top row (raised from 860px so "Contact us" never wraps). Also moves
+   the burger to the start of the row: [☰] [logo] … [theme + Get Started]. */
+@media (max-width: 1000px) {
+  .pe-nav-inner {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  /* Push the right-side controls to the far end; burger + brand stay left. */
+  .pe-brand {
+    margin-right: auto;
+  }
+
+  .pe-nav-links {
+    display: none;
+  }
+
+  .pe-nav-right .pe-desktop-only {
+    display: none;
+  }
+
+  .pe-burger {
+    display: grid;
+    order: -1;
+  }
+
+  .pe-mobile-panel.open {
+    display: flex;
+  }
+}
+
+@media (max-width: 860px) {
+  .pe-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--pe-s7) var(--pe-s6);
+  }
+
+  .pe-stat-div {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+
+  /* Mobile — tightest rhythm; single-column everything, but never cramped. */
+  .pe-home {
+    --pe-section-y: var(--pe-s10);
+    --pe-head-gap: var(--pe-s8);
+    --pe-grid-gap: var(--pe-s4);
+    --pe-card-pad: var(--pe-s6);
+    --pe-col-gap: var(--pe-s7);
+    --pe-stack-gap: var(--pe-s5);
+  }
+
+  /* Give big multi-line section headings room to breathe on small screens. */
+  .pe-home .pe-h2 {
+    line-height: 1.16;
+  }
+
+  .pe-hero {
+    padding: 72px 0 72px;
+  }
+
+  .pe-hero-grid {
+    gap: var(--pe-s7);
+  }
+
+  .pe-hero-badge {
+    margin-bottom: var(--pe-s6);
+  }
+
+  .pe-home .pe-h1 {
+    font-size: clamp(29px, 8vw, 36px);
+    line-height: 1.12;
+    max-width: 18ch;
+  }
+
+  .pe-home .pe-hero-sub {
+    margin-top: var(--pe-s4);
+    font-size: 15px;
+  }
+
+  .pe-home .pe-hero .pe-lede {
+    margin-top: var(--pe-s5);
+  }
+
+  .pe-hero-cta {
+    margin-top: var(--pe-s6);
+    width: 100%;
+  }
+
+  .pe-hero-cta .pe-btn {
+    flex: 1 1 auto;
+  }
+
+  .pe-home ul.pe-trust {
+    margin-top: var(--pe-s6);
+  }
+
+  .pe-orbit-wrap {
+    max-width: 300px;
+  }
+
+  .pe-model-grid,
+  .pe-feat-grid,
+  .pe-deploy-grid,
+  .pe-tst-grid,
+  .pe-price-grid,
+  .pe-why-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .pe-price-bar {
+    grid-template-columns: 1fr;
+    gap: var(--pe-s6);
+  }
+
+  .pe-stats-wrap {
+    padding: var(--pe-s7) var(--pe-s6);
+  }
+
+  .pe-final-inner {
+    padding: var(--pe-s9) var(--pe-s6);
+  }
+
+  .pe-dash-body {
+    grid-template-columns: 1fr;
+  }
+
+  .pe-foot-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Stack brand over contact with a tight, even gap — no large empty gap. */
+  .pe-foot-grid-compact {
+    grid-template-columns: 1fr;
+    max-width: 420px;
+    gap: var(--pe-s6);
+    justify-items: start;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .pe-home *,
+  .pe-home *::before,
+  .pe-home *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .pe-reveal {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* =============================================================================
+   BOOK A DEMO — lead form
+   ========================================================================== */
+.pe-demo-card {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: var(--pe-card-pad);
+}
+
+.pe-demo-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--pe-s6);
+}
+
+.pe-demo-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--pe-s5);
+}
+
+.pe-demo-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--pe-s2);
+}
+
+.pe-demo-field-full {
+  grid-column: 1 / -1;
+}
+
+.pe-demo-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--pe-text);
+}
+
+.pe-demo-req {
+  color: var(--pe-primary-2);
+}
+
+.pe-demo-optional {
+  font-weight: 500;
+  color: var(--pe-text-3);
+}
+
+.pe-home .pe-demo-hint {
+  font-size: 13px;
+  color: var(--pe-text-3);
+  line-height: 1.5;
+  margin: -2px 0 2px;
+}
+
+.pe-demo-input {
+  width: 100%;
+  font-family: inherit;
+  font-size: 15px;
+  color: var(--pe-text);
+  background: var(--pe-surface);
+  border: 1px solid var(--pe-border-strong);
+  border-radius: var(--pe-radius-sm);
+  padding: 12px 14px;
+  transition: border-color 0.2s var(--pe-ease), box-shadow 0.2s var(--pe-ease), background 0.2s;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.pe-demo-input::placeholder {
+  color: var(--pe-text-3);
+}
+
+.pe-demo-input:hover {
+  border-color: var(--pe-primary-2);
+}
+
+.pe-demo-input:focus {
+  outline: none;
+  border-color: var(--pe-primary-2);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--pe-primary-2) 24%, transparent);
+  background: var(--pe-surface-hover);
+}
+
+.pe-demo-textarea {
+  resize: vertical;
+  min-height: 120px;
+  line-height: 1.55;
+}
+
+/* Select — reset native chrome and draw our own chevron so it matches inputs
+   in both themes (currentColor keeps it legible on light and dark). */
+.pe-demo-select {
+  cursor: pointer;
+  padding-right: 40px;
+  background-image:
+    linear-gradient(45deg, transparent 50%, currentColor 50%),
+    linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position:
+    calc(100% - 20px) calc(50% - 2px),
+    calc(100% - 15px) calc(50% - 2px);
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+}
+
+.pe-demo-select:invalid {
+  color: var(--pe-text-3);
+}
+
+.pe-demo-select option {
+  color: var(--pe-text);
+  background: var(--pe-surface-solid);
+}
+
+.pe-demo-error {
+  font-size: 14px;
+  color: #ef4444;
+  background: color-mix(in srgb, #ef4444 12%, transparent);
+  border: 1px solid color-mix(in srgb, #ef4444 34%, transparent);
+  border-radius: var(--pe-radius-sm);
+  padding: 10px 14px;
+}
+
+.pe-demo-submit {
+  width: 100%;
+}
+
+.pe-demo-submit:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: 0 8px 24px rgba(99, 102, 241, 0.25);
+}
+
+.pe-demo-spin {
+  animation: pe-demo-spin 0.9s linear infinite;
+}
+
+@keyframes pe-demo-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Success state — replaces the form after submit. */
+.pe-demo-success {
+  text-align: center;
+  padding: var(--pe-s6) var(--pe-s3);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--pe-s3);
+}
+
+.pe-demo-success-ico {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: var(--pe-accent-2);
+  background: color-mix(in srgb, var(--pe-accent-2) 16%, transparent);
+  border: 1px solid color-mix(in srgb, var(--pe-accent-2) 40%, transparent);
+}
+
+.pe-demo-success-ico svg {
+  width: 28px;
+  height: 28px;
+}
+
+.pe-home .pe-demo-success h3 {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+.pe-home .pe-demo-success p {
+  font-size: 15px;
+  color: var(--pe-text-2);
+  line-height: 1.6;
+  max-width: 44ch;
+  margin: 0;
+}
+
+@media (max-width: 640px) {
+  .pe-demo-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =============================================================================
+   CONTACT US — category picker (reuses the feature-card look on a button)
+   ========================================================================== */
+/* Category picker holds exactly four cards — a centered, balanced 2×2 grid
+   (not a lopsided 3+1 wrap) so both rows align and the section reads premium. */
+.pe-contact-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--pe-s7);
+  /* slightly roomier gutter between the four cards */
+  max-width: 820px;
+  margin-inline: auto;
+}
+
+/* In the grid the cards fill their cell evenly (drop the flex-basis cap). */
+.pe-contact-grid .pe-feat-card {
+  max-width: none;
+  height: 100%;
+}
+
+@media (max-width: 720px) {
+  .pe-contact-grid {
+    grid-template-columns: 1fr;
+    max-width: 460px;
+  }
+}
+
+.pe-contact-cat {
+  /* reset native <button>/<a> chrome so the card reads like the feature cards */
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+  width: 100%;
+}
+
+.pe-contact-cat:focus-visible {
+  outline: none;
+  border-color: var(--pe-primary-2);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--pe-primary-2) 24%, transparent);
+}
+
+.pe-contact-form-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--pe-s4);
+  flex-wrap: wrap;
+}
+
+.pe-contact-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--pe-text-2);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: color 0.2s var(--pe-ease);
+}
+
+.pe-contact-back:hover {
+  color: var(--pe-primary-2);
+}
+
+.pe-contact-back svg {
+  width: 16px;
+  height: 16px;
+}
+
+.pe-contact-cat-badge {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--pe-primary-2);
+  background: color-mix(in srgb, var(--pe-primary-2) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--pe-primary-2) 34%, transparent);
+  border-radius: 999px;
+  padding: 4px 12px;
+}
+
+/* =============================================================================
+   +2px text on marketing pages — /model /features /pricing /contact main content
+   Scoped under .pe-boost (added to each page's <main>). Auto-generated: every
+   font-size in this file, bumped +2px. Navbar/Footer sit OUTSIDE <main>, and the
+   homepage's <main> has no .pe-boost class, so neither is affected. Media-query
+   variants are reproduced so the bump holds at every breakpoint.
+   ============================================================================= */
+
+.pe-boost .pe-eyebrow {
+  font-size: 15px;
+}
+
+.pe-boost .pe-h2 {
+  font-size: clamp(32px, 4vw, 48px);
+}
+
+.pe-boost .pe-lede {
+  font-size: clamp(18px, 1.6vw, 21px);
+}
+
+.pe-boost .pe-btn {
+  font-size: 17px;
+}
+
+.pe-boost .pe-btn-lg {
+  font-size: 18px;
+}
+
+.pe-boost .pe-btn-sm {
+  font-size: 16px;
+}
+
+.pe-boost .pe-hero-badge {
+  font-size: 15px;
+}
+
+.pe-boost .pe-pill {
+  font-size: 13px;
+}
+
+.pe-boost .pe-h1 {
+  font-size: clamp(36px, 4.6vw, 56px);
+}
+
+.pe-boost .pe-hero-sub {
+  font-size: clamp(17px, 1.25vw, 19px);
+}
+
+.pe-boost .pe-trust li {
+  font-size: 16px;
+}
+
+.pe-boost .pe-node-card {
+  font-size: 14.5px;
+}
+
+.pe-boost .pe-logo {
+  font-size: 17px;
+}
+
+.pe-boost .pe-feat-card h3 {
+  font-size: 18.5px;
+}
+
+.pe-boost .pe-feat-card p {
+  font-size: 16px;
+}
+
+.pe-boost .pe-model-card h3 {
+  font-size: 18px;
+}
+
+.pe-boost .pe-model-card>p {
+  font-size: 15.5px;
+}
+
+.pe-boost .pe-badge {
+  font-size: 13.5px;
+}
+
+.pe-boost .pe-viz-bbox::after {
+  font-size: 11px;
+}
+
+.pe-boost .pe-model-bullets li {
+  font-size: 15px;
+}
+
+.pe-boost .pe-feature-col h4 {
+  font-size: 17px;
+}
+
+.pe-boost .pe-feature-col p {
+  font-size: 15px;
+}
+
+.pe-boost .pe-feat2-tall-h {
+  font-size: clamp(22px, 2vw, 26px);
+}
+
+.pe-boost .pe-feat2-tall-p {
+  font-size: 16px;
+}
+
+.pe-boost .pe-feat2-tall-list li {
+  font-size: 16px;
+}
+
+.pe-boost .pe-feat2-top h3 {
+  font-size: 19px;
+}
+
+.pe-boost .pe-feat2-desc {
+  font-size: 15.5px;
+}
+
+.pe-boost .pe-feat2-bullets li {
+  font-size: 15.5px;
+}
+
+.pe-boost .pe-test-left h3 {
+  font-size: 21px;
+}
+
+.pe-boost .pe-test-left>p {
+  font-size: 16px;
+}
+
+.pe-boost .pe-test-chip {
+  font-size: 15px;
+}
+
+.pe-boost .pe-cm-title {
+  font-size: 14px;
+}
+
+.pe-boost .pe-cm3 i {
+  font-size: 16px;
+}
+
+.pe-boost .pe-gauge-cap {
+  font-size: 14px;
+}
+
+.pe-boost .pe-gauge-val {
+  font-size: 26px;
+}
+
+.pe-boost .pe-gauge-label {
+  font-size: 14.5px;
+}
+
+.pe-boost .pe-ico-txt {
+  font-size: 14px;
+}
+
+.pe-boost .pe-dash-item h4 {
+  font-size: 17.5px;
+}
+
+.pe-boost .pe-dash-item p {
+  font-size: 15.5px;
+}
+
+.pe-boost .pe-dash-url {
+  font-size: 13.5px;
+}
+
+.pe-boost .pe-dm-eyebrow {
+  font-size: 12px;
+}
+
+.pe-boost .pe-dm-value {
+  font-size: 29px;
+}
+
+.pe-boost .pe-dm-unit {
+  font-size: 17px;
+}
+
+.pe-boost .pe-dm-num {
+  font-size: 15px;
+}
+
+.pe-boost .pe-dm-delta {
+  font-size: 13px;
+}
+
+.pe-boost .pe-dm-pill {
+  font-size: 12.5px;
+}
+
+.pe-boost .pe-dm-foot {
+  font-size: 11.5px;
+}
+
+.pe-boost .pe-cm-cell.head {
+  font-size: 11px;
+}
+
+.pe-boost .pe-cm i {
+  font-size: 12.5px;
+}
+
+.pe-boost .pe-cm-legend {
+  font-size: 11px;
+}
+
+.pe-boost .pe-dm-row {
+  font-size: 14px;
+}
+
+.pe-boost .pe-dm-row.head {
+  font-size: 11px;
+}
+
+.pe-boost .pe-deploy-card h3 {
+  font-size: 19px;
+}
+
+.pe-boost .pe-deploy-card p {
+  font-size: 15.5px;
+}
+
+.pe-boost .pe-deploy-meta {
+  font-size: 14px;
+}
+
+.pe-boost .pe-stat-num {
+  font-size: clamp(32px, 3.4vw, 46px);
+}
+
+.pe-boost .pe-stat-label {
+  font-size: 16px;
+}
+
+.pe-boost .pe-why-head h3 {
+  font-size: 22px;
+}
+
+.pe-boost .pe-why-row {
+  font-size: 16.5px;
+}
+
+.pe-boost .pe-tag-soft {
+  font-size: 13px;
+}
+
+.pe-boost .pe-tst-quote {
+  font-size: 17px;
+}
+
+.pe-boost .pe-avatar {
+  font-size: 17px;
+}
+
+.pe-boost .pe-tst-who h4 {
+  font-size: 16.5px;
+}
+
+.pe-boost .pe-tst-who p {
+  font-size: 15px;
+}
+
+.pe-boost .pe-price-tag {
+  font-size: 13.5px;
+}
+
+.pe-boost .pe-price-name {
+  font-size: 17px;
+}
+
+.pe-boost .pe-price-desc {
+  font-size: 15.5px;
+}
+
+.pe-boost .pe-price-amt .n {
+  font-size: 46px;
+}
+
+.pe-boost .pe-price-amt .p {
+  font-size: 16px;
+}
+
+.pe-boost .pe-price-feats li {
+  font-size: 16px;
+}
+
+.pe-boost .pe-price-bar-item h4 {
+  font-size: 17px;
+}
+
+.pe-boost .pe-price-bar-item p {
+  font-size: 15px;
+}
+
+.pe-boost .pe-faq-q {
+  font-size: 18.5px;
+}
+
+.pe-boost .pe-faq-a p {
+  font-size: 17px;
+}
+
+.pe-boost .pe-final h2 {
+  font-size: clamp(32px, 4.4vw, 52px);
+}
+
+.pe-boost .pe-final p {
+  font-size: 20px;
+}
+
+.pe-boost .pe-demo-label {
+  font-size: 16px;
+}
+
+.pe-boost .pe-demo-hint {
+  font-size: 15px;
+}
+
+.pe-boost .pe-demo-input {
+  font-size: 17px;
+}
+
+.pe-boost .pe-demo-error {
+  font-size: 16px;
+}
+
+.pe-boost .pe-demo-success h3 {
+  font-size: 24px;
+}
+
+.pe-boost .pe-demo-success p {
+  font-size: 17px;
+}
+
+.pe-boost .pe-contact-back {
+  font-size: 16px;
+}
+
+.pe-boost .pe-contact-cat-badge {
+  font-size: 15px;
+}
+
+@media (max-width: 560px) {
+  .pe-boost .pe-dm-value {
+    font-size: 25px;
+  }
+}
+
+@media (max-width: 1000px) {
+  .pe-boost .pe-h1 {
+    font-size: clamp(34px, 6vw, 48px);
+  }
+}
+
+@media (max-width: 640px) {
+  .pe-boost .pe-h1 {
+    font-size: clamp(31px, 8vw, 38px);
+  }
+
+  .pe-boost .pe-hero-sub {
+    font-size: 17px;
+  }
+}
+/* =============================================================================
+   SOLUTIONS — /solutions hub + /solutions/[slug] template
+   Namespaced .pe-sol-*. Every selector is prefixed with .pe-home: the element
+   resets near the top of this file (.pe-home ul / p / h1-h4, specificity 0,1,1)
+   would otherwise beat a bare single-class rule — including inside media
+   queries. Type, color, radius and shadow all come from the tokens above; no
+   new design language is introduced here.
+   ============================================================================= */
+
+/* ---- Hero --------------------------------------------------------------- */
+.pe-home .pe-sol-hero {
+  padding-top: calc(var(--pe-section-y) + var(--pe-s6));
+}
+
+.pe-home .pe-sol-hero-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--pe-col-gap);
+  align-items: center;
+}
+
+.pe-home .pe-sol-hero-grid.has-media {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr);
+}
+
+.pe-home .pe-sol-h1 {
+  max-width: 20ch;
+}
+
+.pe-home .pe-sol-h1-center {
+  max-width: 22ch;
+  margin: 0 auto;
+}
+
+.pe-home .pe-sol-ctas {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--pe-s4);
+  margin-top: var(--pe-s8);
+}
+
+.pe-home .pe-sol-ctas-center {
+  justify-content: center;
+}
+
+.pe-home .pe-sol-hero-anchor {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--pe-text-2);
+  transition: color 0.25s var(--pe-ease);
+}
+
+.pe-home .pe-sol-hero-anchor svg {
+  width: 15px;
+  height: 15px;
+  transition: transform 0.25s var(--pe-ease);
+}
+
+.pe-home .pe-sol-hero-anchor:hover {
+  color: var(--pe-text);
+}
+
+.pe-home .pe-sol-hero-anchor:hover svg {
+  transform: translateX(3px);
+}
+
+.pe-home .pe-sol-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--pe-s3);
+  margin-top: var(--pe-s7);
+}
+
+/* ---- Problem ------------------------------------------------------------ */
+.pe-home .pe-sol-split {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--pe-col-gap);
+  align-items: start;
+}
+
+.pe-home .pe-sol-statement {
+  margin-top: var(--pe-stack-gap);
+  font-size: clamp(18px, 2vw, 23px);
+  line-height: 1.55;
+  letter-spacing: -0.01em;
+  color: var(--pe-text);
+  max-width: 46ch;
+}
+
+.pe-home .pe-sol-sub-h {
+  margin-top: var(--pe-s8);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--pe-text-3);
+}
+
+.pe-home .pe-sol-audience {
+  display: grid;
+  gap: var(--pe-s3);
+  margin-top: var(--pe-s5);
+}
+
+.pe-home .pe-sol-audience li {
+  display: flex;
+  align-items: center;
+  gap: var(--pe-s3);
+  font-size: 16px;
+  color: var(--pe-text-2);
+}
+
+.pe-home .pe-sol-audience svg {
+  width: 15px;
+  height: 15px;
+  flex: none;
+  color: var(--pe-accent-2);
+}
+
+.pe-home .pe-sol-edge {
+  display: grid;
+  gap: var(--pe-s4);
+}
+
+.pe-home .pe-sol-edge-card {
+  display: flex;
+  gap: var(--pe-s4);
+  padding: var(--pe-s6);
+  align-items: flex-start;
+}
+
+.pe-home .pe-sol-edge-card h4 {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.pe-home .pe-sol-edge-card p {
+  margin-top: var(--pe-s2);
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--pe-text-2);
+}
+
+/* ---- Workflow ----------------------------------------------------------- */
+.pe-home .pe-sol-variant+.pe-sol-variant {
+  margin-top: var(--pe-s10);
+}
+
+.pe-home .pe-sol-variant-head {
+  margin-bottom: var(--pe-s6);
+  text-align: center;
+}
+
+.pe-home .pe-sol-variant-head h3 {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.pe-home .pe-sol-variant-head p {
+  margin-top: var(--pe-s2);
+  font-size: 15px;
+  color: var(--pe-text-2);
+}
+
+.pe-home .pe-sol-stages {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: var(--pe-s4);
+}
+
+.pe-home .pe-sol-stage {
+  padding: var(--pe-s5);
+  display: flex;
+  flex-direction: column;
+}
+
+.pe-home .pe-sol-stage-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--pe-s3);
+  margin-bottom: var(--pe-s4);
+}
+
+.pe-home .pe-sol-stage-num {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--pe-text-3);
+}
+
+.pe-home .pe-sol-stage h4 {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.pe-home .pe-sol-stage p {
+  margin-top: var(--pe-s2);
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--pe-text-2);
+  flex: 1;
+}
+
+/* Names the product screen a stage happens on. Replaced the old monospace
+   route chip — this is prose, so it is not styled as code. */
+.pe-home .pe-sol-stage-where {
+  display: inline-block;
+  align-self: flex-start;
+  margin-top: var(--pe-s4);
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: var(--pe-gradient-soft);
+  border: 1px solid var(--pe-border);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--pe-text-3);
+  overflow-wrap: anywhere;
+}
+
+/* ---- Key features ------------------------------------------------------- */
+.pe-home .pe-sol-feat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--pe-grid-gap);
+}
+
+.pe-home .pe-sol-feat-card {
+  padding: var(--pe-card-pad);
+  display: flex;
+  flex-direction: column;
+}
+
+.pe-home .pe-sol-feat-card h3 {
+  margin-top: var(--pe-s5);
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+}
+
+.pe-home .pe-sol-feat-card p {
+  margin-top: var(--pe-s3);
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--pe-text-2);
+  flex: 1;
+}
+
+/* ---- Use cases ---------------------------------------------------------- */
+.pe-home .pe-sol-uc-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--pe-grid-gap);
+}
+
+.pe-home .pe-sol-uc-card {
+  padding: var(--pe-card-pad);
+  display: flex;
+  flex-direction: column;
+}
+
+.pe-home .pe-sol-uc-card h3 {
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+}
+
+.pe-home .pe-sol-uc-card p {
+  margin-top: var(--pe-s3);
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--pe-text-2);
+  flex: 1;
+}
+
+.pe-home .pe-sol-uc-card .pe-badges {
+  margin-top: var(--pe-s5);
+}
+
+/* ---- Supported hardware ------------------------------------------------- */
+.pe-home .pe-sol-hw-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--pe-grid-gap);
+}
+
+.pe-home .pe-sol-hw-card {
+  padding: var(--pe-s6);
+  display: flex;
+  gap: var(--pe-s4);
+  align-items: flex-start;
+}
+
+.pe-home .pe-sol-hw-body h3 {
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+}
+
+.pe-home .pe-sol-hw-pkg {
+  margin-top: var(--pe-s2);
+  font-size: 14px;
+  color: var(--pe-text-2);
+}
+
+.pe-home .pe-sol-hw-runs {
+  margin-top: var(--pe-s2);
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--pe-text-3);
+}
+
+/* Intended usage — Integration pages only (hardwareMode "full"). */
+.pe-home .pe-sol-hw-best {
+  margin-top: var(--pe-s3);
+  padding-top: var(--pe-s3);
+  border-top: 1px solid var(--pe-border);
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--pe-text-2);
+}
+
+/* The "there are more targets" note on focused (Application / Industry) pages. */
+.pe-home .pe-sol-hw-more {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--pe-s3) var(--pe-s5);
+  margin-top: var(--pe-s7);
+  text-align: center;
+}
+
+.pe-home .pe-sol-hw-more p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--pe-text-3);
+}
+
+.pe-home .pe-sol-related {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--pe-s4);
+  margin-top: var(--pe-s8);
+  padding-top: var(--pe-s6);
+  border-top: 1px solid var(--pe-border);
+}
+
+.pe-home .pe-sol-related-label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--pe-text-3);
+}
+
+.pe-home .pe-sol-related-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--pe-text-2);
+  transition: color 0.25s var(--pe-ease);
+}
+
+.pe-home .pe-sol-related-link svg {
+  width: 15px;
+  height: 15px;
+  transition: transform 0.25s var(--pe-ease);
+}
+
+.pe-home .pe-sol-related-link:hover {
+  color: var(--pe-primary-2);
+}
+
+.pe-home .pe-sol-related-link:hover svg {
+  transform: translateX(3px);
+}
+
+/* ---- Why Petal Edge ----------------------------------------------------- */
+.pe-home .pe-sol-why-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--pe-s4);
+}
+
+.pe-home .pe-sol-why-card {
+  padding: var(--pe-s6);
+}
+
+.pe-home .pe-sol-why-card h3 {
+  margin-top: var(--pe-s5);
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+}
+
+.pe-home .pe-sol-why-card p {
+  margin-top: var(--pe-s3);
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--pe-text-2);
+}
+
+.pe-home .pe-sol-included {
+  margin-top: var(--pe-s6);
+  padding: var(--pe-card-pad);
+}
+
+.pe-home .pe-sol-included h3 {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--pe-text-3);
+}
+
+.pe-home .pe-sol-included ul {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--pe-s3) var(--pe-s6);
+  margin-top: var(--pe-s5);
+}
+
+.pe-home .pe-sol-included li {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--pe-s3);
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--pe-text-2);
+}
+
+.pe-home .pe-sol-included svg {
+  width: 15px;
+  height: 15px;
+  flex: none;
+  margin-top: 3px;
+  color: var(--pe-accent-2);
+}
+
+/* ---- Closing CTA -------------------------------------------------------- */
+.pe-home .pe-sol-cta-card {
+  padding: var(--pe-s10) var(--pe-card-pad);
+  text-align: center;
+}
+
+.pe-home .pe-sol-cta-card .pe-lede {
+  margin-top: var(--pe-s5);
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 56ch;
+}
+
+.pe-home .pe-sol-cta-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--pe-s4);
+  margin-top: var(--pe-s8);
+}
+
+/* ---- Hub ---------------------------------------------------------------- */
+.pe-home .pe-sol-hub-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--pe-grid-gap);
+}
+
+/* The Reveal wrapper is the grid child; the anchor inside must fill it so all
+   cards in a row are the same height. */
+.pe-home .pe-sol-hub-grid>.pe-reveal {
+  display: flex;
+}
+
+.pe-home .pe-sol-hub-card {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding: var(--pe-card-pad);
+}
+
+.pe-home .pe-sol-hub-card h3 {
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.pe-home .pe-sol-hub-card p {
+  margin-top: var(--pe-s3);
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--pe-text-2);
+  flex: 1;
+}
+
+.pe-home .pe-sol-hub-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: var(--pe-s6);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--pe-primary-2);
+}
+
+.pe-home .pe-sol-hub-more svg {
+  width: 15px;
+  height: 15px;
+  transition: transform 0.25s var(--pe-ease);
+}
+
+.pe-home .pe-sol-hub-card:hover .pe-sol-hub-more svg {
+  transform: translateX(3px);
+}
+
+/* ---- Screen-reader-only -------------------------------------------------
+   Carries headings that the visual design does not need but the document
+   outline does. Prefixed with .pe-home so it beats the element resets on
+   h1–h4 (specificity 0,1,1). */
+.pe-home .pe-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---- Solutions nav dropdown ---------------------------------------------
+   Every selector is .pe-home-prefixed: the panel contains ul / p / h3, all of
+   which .pe-home resets at specificity (0,1,1) — a bare .pe-nav-drop-head
+   would lose to it. */
+.pe-home .pe-nav-drop-wrap {
+  position: relative;
+}
+
+/* Sizing, weight and hover all come from .pe-nav-link — the trigger only adds
+   the chevron. Its right padding is trimmed by the chevron's optical width so
+   "Solutions" keeps the same rhythm as the plain links either side of it. */
+.pe-home .pe-nav-drop-btn {
+  gap: 4px;
+  padding-right: 9px;
+  /* The sibling links are <a>, and .pe-home a { color: inherit } (0,1,1)
+     outranks .pe-nav-link (0,1,0) — so they render at the nav's own colour
+     while a <button>, which inherits nothing by default, was left on the
+     dimmer --pe-text-2. Inheriting here puts the trigger on exactly the same
+     colour as its neighbours, whatever that colour ends up being. */
+  color: inherit;
+}
+
+.pe-home .pe-nav-drop-btn svg {
+  width: 12px;
+  height: 12px;
+  stroke-width: 2;
+  opacity: 0.65;
+  transition: transform 0.2s var(--pe-ease), opacity 0.18s var(--pe-ease),
+    color 0.18s var(--pe-ease);
+}
+
+.pe-home .pe-nav-drop-btn:hover svg,
+.pe-home .pe-nav-drop-btn.open svg {
+  opacity: 1;
+}
+
+.pe-home .pe-nav-drop-btn.open svg {
+  transform: rotate(180deg);
+  color: var(--pe-primary-2);
+}
+
+.pe-home .pe-nav-drop-btn.open {
+  color: var(--pe-text);
+  background: var(--pe-surface);
+}
+
+.pe-home .pe-nav-drop {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 60;
+  /* Clamped to the viewport so the panel can never push the page into
+     horizontal scroll, even when the trigger sits near an edge at the 1000px
+     breakpoint where the desktop nav is still shown. */
+  min-width: min(620px, calc(100vw - 40px));
+  max-width: calc(100vw - 40px);
+  padding: var(--pe-s6);
+  border-radius: var(--pe-radius);
+  background: var(--pe-nav-bg);
+  backdrop-filter: blur(18px);
+  border: 1px solid var(--pe-border);
+  box-shadow: var(--pe-shadow-lg, 0 18px 50px rgba(0, 0, 0, 0.28));
+  white-space: normal;
+}
+
+.pe-home .pe-nav-drop[hidden] {
+  display: none;
+}
+
+.pe-home .pe-nav-drop-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--pe-s6);
+}
+
+.pe-home .pe-nav-drop-col p.pe-nav-drop-head {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0 0 var(--pe-s3);
+  padding-bottom: var(--pe-s3);
+  border-bottom: 1px solid var(--pe-border);
+}
+
+.pe-home .pe-nav-drop-label {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--pe-text);
+}
+
+.pe-home .pe-nav-drop-kicker {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--pe-text-3);
+}
+
+.pe-home .pe-nav-drop-col ul {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.pe-home .pe-nav-drop-col a {
+  display: block;
+  padding: 7px 9px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--pe-text-2);
+  transition: color 0.2s, background 0.2s;
+}
+
+.pe-home .pe-nav-drop-col a:hover,
+.pe-home .pe-nav-drop-col a:focus-visible {
+  color: var(--pe-text);
+  background: var(--pe-surface);
+}
+
+.pe-home .pe-nav-drop-all {
+  display: inline-block;
+  margin-top: var(--pe-s5);
+  padding-top: var(--pe-s4);
+  border-top: 1px solid var(--pe-border);
+  width: 100%;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--pe-primary-2);
+}
+
+/* Focus must stay visible for keyboard users inside the panel. */
+.pe-home .pe-nav-drop a:focus-visible,
+.pe-home .pe-nav-drop-btn:focus-visible {
+  outline: 2px solid var(--pe-primary-2);
+  outline-offset: 2px;
+}
+
+/* ---- Mobile grouped solutions ------------------------------------------- */
+.pe-home .pe-mobile-groups {
+  display: flex;
+  flex-direction: column;
+  gap: var(--pe-s4);
+  padding: var(--pe-s3) 0;
+}
+
+.pe-home .pe-mobile-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.pe-home .pe-mobile-group p.pe-mobile-group-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px;
+  margin: 0 0 4px;
+  padding: 0 14px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--pe-text-3);
+}
+
+.pe-home .pe-mobile-group-head .pe-nav-drop-kicker {
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 500;
+}
+
+/* ---- Media slots -------------------------------------------------------- */
+.pe-home .pe-sol-media {
+  margin: 0;
+  border-radius: var(--pe-radius);
+  overflow: hidden;
+  border: 1px solid var(--pe-border);
+  background: var(--pe-surface);
+  box-shadow: var(--pe-shadow-sm);
+}
+
+.pe-home .pe-sol-media img,
+.pe-home .pe-sol-media video {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.pe-home .pe-sol-media figcaption {
+  padding: var(--pe-s3) var(--pe-s5);
+  font-size: 13px;
+  color: var(--pe-text-3);
+  border-top: 1px solid var(--pe-border);
+}
+
+.pe-home .pe-sol-media-wide {
+  margin-top: var(--pe-s9);
+}
+
+/* ---- Responsive --------------------------------------------------------- */
+@media (max-width: 1000px) {
+  .pe-home .pe-sol-hero-grid.has-media {
+    grid-template-columns: 1fr;
+  }
+
+  .pe-home .pe-sol-split {
+    grid-template-columns: 1fr;
+    gap: var(--pe-s9);
+  }
+
+  .pe-home .pe-sol-feat-grid,
+  .pe-home .pe-sol-uc-grid,
+  .pe-home .pe-sol-hw-grid,
+  .pe-home .pe-sol-hub-grid,
+  .pe-home .pe-sol-why-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .pe-home .pe-sol-hero {
+    padding-top: calc(var(--pe-section-y) + var(--pe-s4));
+  }
+
+  .pe-home .pe-sol-feat-grid,
+  .pe-home .pe-sol-uc-grid,
+  .pe-home .pe-sol-hw-grid,
+  .pe-home .pe-sol-hub-grid,
+  .pe-home .pe-sol-why-grid,
+  .pe-home .pe-sol-stages {
+    grid-template-columns: 1fr;
+  }
+
+  .pe-home .pe-sol-included ul {
+    grid-template-columns: 1fr;
+  }
+
+  .pe-home .pe-sol-ctas {
+    gap: var(--pe-s3);
+  }
+
+  .pe-home .pe-sol-cta-card {
+    padding: var(--pe-s8) var(--pe-s6);
+  }
+}
+
+/* =============================================================================
+   COMPUTER VISION PAGE — .pe-cvp scope + .pe-cv-* components
+   Only /solutions/computer-vision carries .pe-cvp on <main>, so every rule
+   below is inert on the other eight solution pages. No new tokens: colour,
+   radius, shadow, spacing and easing all come from the scale at the top of
+   this file. Same .pe-home prefix rule as the SOLUTIONS block above — the
+   element resets (specificity 0,1,1) would otherwise win.
+   ============================================================================= */
+
+/* ---- Page rhythm --------------------------------------------------------
+   A wider section gap than the shared template, and an alternating ground so
+   the page reads as bands of content instead of one continuous field. The
+   band fades out at both edges so it never draws a hard line across the
+   ambient background behind it. */
+.pe-home .pe-cvp {
+  --pe-section-y: 136px;
+  --pe-head-gap: var(--pe-s11);
+}
+
+.pe-home .pe-cvp .pe-section:nth-of-type(even) {
+  background: linear-gradient(180deg,
+      transparent,
+      var(--pe-bg-2) 12%,
+      var(--pe-bg-2) 88%,
+      transparent);
+}
+
+/* ---- Hero ---------------------------------------------------------------- */
+.pe-home .pe-cvp .pe-sol-hero-grid.has-media {
+  grid-template-columns: minmax(0, 0.86fr) minmax(0, 1.14fr);
+  gap: var(--pe-s10);
+  align-items: center;
+}
+
+.pe-home .pe-cvp .pe-sol-h1 {
+  max-width: 13ch;
+  font-size: clamp(38px, 4.1vw, 54px);
+  line-height: 1.03;
+}
+
+.pe-home .pe-cvp .pe-hero-sub {
+  margin-top: var(--pe-s6);
+  max-width: 44ch;
+}
+
+.pe-home .pe-cvp .pe-sol-ctas {
+  margin-top: var(--pe-s7);
+}
+
+/* Proof chips are evidence, not actions — a hairline separates them from the
+   button row so the two never read as one control cluster. */
+.pe-home .pe-cvp .pe-sol-chips {
+  margin-top: var(--pe-s9);
+  padding-top: var(--pe-s6);
+  border-top: 1px solid var(--pe-border);
+}
+
+/* ---- Vision still (hero media slot) --------------------------------------
+   The hero's product shot: one static PNG in the slot the drawn console used
+   to occupy. Nothing in here moves — no float, no border light, no sweep — so
+   there is no reduced-motion case to answer either.
+
+   The framing is unchanged: an ambient halo behind, then a 1.5px gutter that
+   reads as a hairline border, the large radius and the lifted shadow. The
+   image carries its own aspect ratio, so the slot imposes none. */
+.pe-home .pe-vc {
+  position: relative;
+}
+
+.pe-home .pe-vc-halo {
+  position: absolute;
+  inset: -15% -11% -19%;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(56% 56% at 50% 42%, var(--pe-glow-a), transparent 70%),
+    radial-gradient(44% 44% at 82% 84%, var(--pe-glow-c), transparent 72%);
+  filter: blur(32px);
+  opacity: 0.5;
+}
+
+/* The frame is a 1.5px gutter around the still. Its background is the border
+   colour, so the gutter reads as a hairline around the image. */
+.pe-home .pe-vc-frame {
+  position: relative;
+  z-index: 1;
+  padding: 1.5px;
+  overflow: hidden;
+  border-radius: var(--pe-radius-lg);
+  background: var(--pe-border-strong);
+  box-shadow: var(--pe-shadow-lg);
+}
+
+/* The image is the whole slot: it sets its own height from its intrinsic
+   ratio and scales with the column, at every breakpoint. */
+.pe-home .pe-vc-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: calc(var(--pe-radius-lg) - 2px);
+}
+
+/* ---- What you get -------------------------------------------------------- */
+.pe-home .pe-cv-head {
+  max-width: 760px;
+}
+
+.pe-home .pe-cv-head .pe-lede {
+  max-width: 60ch;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* The belts run full-bleed, so the head above them is the only thing the
+   container holds — a tighter gap under it keeps the legend attached to the
+   sentence it explains. */
+.pe-home .pe-cv-platform .pe-section-head {
+  margin-bottom: var(--pe-s7);
+}
+
+.pe-home .pe-mq-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--pe-s3) var(--pe-s6);
+  margin: 0 0 var(--pe-s9);
+  padding: 0;
+  list-style: none;
+}
+
+.pe-home .pe-mq-legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: var(--pe-text-3);
+}
+
+.pe-home .pe-mq-legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--c);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--c) 16%, transparent);
+}
+
+/* ---- AI-assisted labeling ------------------------------------------------
+   Copy left, product shot right, at 45/55 — the still is the wider column
+   because it is the argument the copy is captioning. Everything is drawn from
+   the tokens above; the only local value is the 24px frame radius, which sits
+   between --pe-radius and --pe-radius-lg and is held in one custom property so
+   the image and its gutter can never disagree about it. */
+.pe-home .pe-cvl-split {
+  display: grid;
+  grid-template-columns: minmax(0, 45fr) minmax(0, 55fr);
+  gap: var(--pe-col-gap);
+  align-items: center;
+}
+
+/* The `.pe-home p` reset (0,1,1) beats a bare `.pe-lede`; this wins at (0,3,0)
+   rather than relying on it. Same reason the list below is qualified. */
+.pe-home .pe-cvl-copy .pe-lede {
+  margin-top: var(--pe-stack-gap);
+  max-width: 54ch;
+}
+
+.pe-home ul.pe-cvl-points {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--pe-s5);
+  margin-top: var(--pe-s8);
+}
+
+.pe-home .pe-cvl-point {
+  display: flex;
+  align-items: center;
+  gap: var(--pe-s3);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  color: var(--pe-text);
+}
+
+/* Smaller than the 48px card chip: these sit beside a single line of copy
+   rather than at the head of a card. */
+.pe-home .pe-cvl-point .pe-ico {
+  width: 38px;
+  height: 38px;
+  border-radius: 11px;
+}
+
+.pe-home .pe-cvl-point .pe-ico svg {
+  width: 18px;
+  height: 18px;
+}
+
+.pe-home .pe-cvl-actions {
+  margin-top: var(--pe-s8);
+}
+
+/* Same framing idea as the hero still: a 1.5px gutter in the border colour
+   reads as a hairline around the image, under the lifted shadow. */
+.pe-home .pe-cvl-media {
+  --pe-cvl-radius: 24px;
+}
+
+.pe-home .pe-cvl-frame {
+  padding: 1.5px;
+  overflow: hidden;
+  border-radius: var(--pe-cvl-radius);
+  background: var(--pe-border-strong);
+  box-shadow: var(--pe-shadow-lg);
+}
+
+/* The shot carries its own aspect ratio, so the slot imposes none — `contain`
+   only matters if a future asset is swapped in at a different ratio. */
+.pe-home .pe-cvl-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  background: var(--pe-bg-2);
+  border-radius: calc(var(--pe-cvl-radius) - 2px);
+}
+
+/* =============================================================================
+   INFINITE MARQUEE — .pe-mq-* (solutions/vision/*)
+
+   A belt, not a carousel. The track holds three identical copies of the row and
+   CSS translates it by exactly one copy width, forever, so the wrap point is
+   never visible. Two rules make that exact:
+
+     • the shift is `calc(-100% / 3)` — one third of a three-copy track;
+     • the gap between cards is margin on the card, never flex `gap`, because
+       flex gap is n-1 per track and would leave the thirds uneven.
+
+   Cost control: `will-change` and the animation live on two elements per row,
+   not on the hundred cards inside, and the cards deliberately skip
+   backdrop-filter — a blur behind a hundred moving boxes is what turns a
+   marquee into a slideshow. The glass here is layered translucency instead.
+   ============================================================================= */
+.pe-home .pe-mq {
+  --pe-mq-gap: var(--pe-s4);
+  display: grid;
+  gap: var(--pe-mq-gap);
+}
+
+.pe-home .pe-mq-view {
+  position: relative;
+  overflow: hidden;
+  /* Room for the hover lift, which would otherwise be clipped. */
+  padding-block: 10px;
+  cursor: grab;
+  /* Vertical scrolling still belongs to the page; horizontal is the belt's. */
+  touch-action: pan-y;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+}
+
+.pe-home .pe-mq-view.is-dragging {
+  cursor: grabbing;
+}
+
+/* Drag offset. Separate element from the track so the pointer and the
+   animation can each own a transform without overwriting the other. */
+.pe-home .pe-mq-shift {
+  transform: translate3d(var(--dx, 0px), 0, 0);
+}
+
+.pe-home .pe-mq-track {
+  display: flex;
+  width: max-content;
+  align-items: stretch;
+  animation: pe-mq-run var(--dur, 60s) linear infinite;
+  animation-direction: var(--dir, normal);
+  will-change: transform;
+}
+
+/* The copies are grouping elements only — the cards must remain the flex
+   items, or the thirds stop lining up. */
+.pe-home .pe-mq-copy {
+  display: contents;
+}
+
+.pe-home .pe-mq-view:hover .pe-mq-track,
+.pe-home .pe-mq-view:focus-within .pe-mq-track,
+.pe-home .pe-mq-view.is-dragging .pe-mq-track {
+  animation-play-state: paused;
+}
+
+.pe-home .pe-mq-item {
+  flex: none;
+  /* Margin, never flex `gap` — see the block header. */
+  margin-right: var(--pe-mq-gap, var(--pe-s4));
+}
+
+/* ---- Cards --------------------------------------------------------------- */
+.pe-home .pe-mq-card {
+  --c: var(--pe-primary-2);
+  position: relative;
+  height: 100%;
+  border-radius: 16px;
+  border: 1px solid var(--pe-border);
+  background:
+    linear-gradient(158deg,
+      color-mix(in srgb, var(--c) 11%, transparent),
+      transparent 58%),
+    var(--pe-surface);
+  box-shadow: var(--pe-shadow-sm);
+  transition:
+    transform 0.35s var(--pe-ease),
+    box-shadow 0.35s var(--pe-ease),
+    border-color 0.35s var(--pe-ease);
+}
+
+/* Gradient edge: accent at the leading corner, brand violet at the trailing
+   one. Off at rest, full on hover. */
+.pe-home .pe-mq-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 1px;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(140deg,
+      color-mix(in srgb, var(--c) 75%, transparent),
+      transparent 46%,
+      color-mix(in srgb, var(--pe-accent) 45%, transparent));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  opacity: 0.45;
+  transition: opacity 0.35s var(--pe-ease);
+}
+
+.pe-home .pe-mq-card:hover {
+  transform: translateY(-6px);
+  border-color: transparent;
+  box-shadow:
+    var(--pe-shadow),
+    0 24px 48px -28px color-mix(in srgb, var(--c) 80%, transparent);
+}
+
+.pe-home .pe-mq-card:hover::after {
+  opacity: 1;
+}
+
+.pe-home .pe-mq-glyph {
+  display: grid;
+  place-items: center;
+  flex: none;
+  color: var(--c);
+  border-radius: 11px;
+  border: 1px solid color-mix(in srgb, var(--c) 32%, transparent);
+  background: linear-gradient(150deg,
+      color-mix(in srgb, var(--c) 28%, transparent),
+      color-mix(in srgb, var(--c) 7%, transparent));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+/* ---- Capability card ----------------------------------------------------- */
+.pe-home .pe-cap {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 13px 22px 13px 13px;
+}
+
+.pe-home .pe-cap-glyph {
+  width: 38px;
+  height: 38px;
+}
+
+.pe-home .pe-cap-glyph svg {
+  width: 18px;
+  height: 18px;
+  stroke-width: 1.9;
+}
+
+.pe-home .pe-cap-text {
+  display: grid;
+  gap: 3px;
+}
+
+.pe-home .pe-cap-title {
+  font-size: 15px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+.pe-home .pe-cap-stage {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--pe-text-3);
+}
+
+.pe-home .pe-cap-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--c);
+}
+
+/* ---- Application card ---------------------------------------------------- */
+.pe-home .pe-app {
+  width: 304px;
+  padding: var(--pe-s6);
+  display: grid;
+  align-content: start;
+}
+
+.pe-home .pe-app-glyph {
+  width: 44px;
+  height: 44px;
+  border-radius: 13px;
+}
+
+.pe-home .pe-app-glyph svg {
+  width: 21px;
+  height: 21px;
+  stroke-width: 1.85;
+}
+
+.pe-home .pe-app-title {
+  margin-top: var(--pe-s5);
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+}
+
+.pe-home .pe-app-desc {
+  margin-top: var(--pe-s2);
+  font-size: 14.5px;
+  line-height: 1.55;
+  color: var(--pe-text-2);
+}
+
+/* ---- Keyframes ----------------------------------------------------------- */
+@keyframes pe-mq-run {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    transform: translate3d(calc(-100% / 3), 0, 0);
+  }
+}
+
+/* ---- Reduced motion ------------------------------------------------------
+   Sits ahead of the responsive block on purpose: it has to win wherever both
+   apply. The belts stop entirely and become ordinary horizontally scrollable
+   rows — a paused marquee that cannot be read is worse than a list. The two
+   duplicate copies go with them, since nothing is looping any more. */
+@media (prefers-reduced-motion: reduce) {
+
+  .pe-home .pe-mq-track {
+    animation: none;
+    width: auto;
+  }
+
+  .pe-home .pe-mq-copy-dup {
+    display: none;
+  }
+
+  .pe-home .pe-mq-view {
+    overflow-x: auto;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+
+  .pe-home .pe-mq-card,
+  .pe-home .pe-mq-card::after {
+    transition: none;
+  }
+
+  .pe-home .pe-mq-card:hover {
+    transform: none;
+  }
+}
+
+/* ---- Responsive ---------------------------------------------------------- */
+@media (max-width: 1000px) {
+
+  /* Mirrors the tablet step the shared tokens take on .pe-home — without this
+     the 136px above would hold all the way down. */
+  .pe-home .pe-cvp {
+    --pe-section-y: var(--pe-s11);
+    --pe-head-gap: var(--pe-s9);
+  }
+
+  .pe-home .pe-cvp .pe-sol-hero-grid.has-media {
+    grid-template-columns: 1fr;
+    gap: var(--pe-s9);
+  }
+
+  /* The stacked hero stays left-aligned, so the sub must not centre itself. */
+  .pe-home .pe-cvp .pe-hero-sub {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .pe-home .pe-vc-halo {
+    opacity: 0.4;
+  }
+
+  /* Tablet: one column, shot under the copy it belongs to. */
+  .pe-home .pe-cvl-split {
+    grid-template-columns: 1fr;
+    gap: var(--pe-s9);
+  }
+}
+
+@media (max-width: 640px) {
+  .pe-home .pe-cvp {
+    --pe-section-y: var(--pe-s10);
+    --pe-head-gap: var(--pe-s8);
+  }
+
+  .pe-home .pe-cvp .pe-sol-chips {
+    margin-top: var(--pe-s7);
+  }
+
+  .pe-home .pe-mq-legend {
+    gap: var(--pe-s2) var(--pe-s4);
+    margin-bottom: var(--pe-s7);
+    font-size: 11px;
+  }
+
+  .pe-home .pe-mq {
+    --pe-mq-gap: 12px;
+  }
+
+  .pe-home .pe-app {
+    width: 258px;
+    padding: var(--pe-s5);
+  }
+
+  .pe-home .pe-app-title {
+    margin-top: var(--pe-s4);
+    font-size: 16px;
+  }
+
+  .pe-home .pe-app-desc {
+    font-size: 14px;
+  }
+
+  .pe-home .pe-cap-title {
+    font-size: 14px;
+  }
+
+  .pe-home ul.pe-cvl-points {
+    grid-template-columns: 1fr;
+    gap: var(--pe-s4);
+    margin-top: var(--pe-s7);
+  }
+
+  .pe-home .pe-cvl-actions {
+    margin-top: var(--pe-s7);
+  }
+
+  /* Full width, centred, and a shallower radius so the frame does not swallow
+     the corners of a small screenshot. */
+  .pe-home .pe-cvl-media {
+    --pe-cvl-radius: 18px;
+    width: 100%;
+    margin-inline: auto;
+  }
+}
+
+/* =============================================================================
+   WORKFLOW WALKTHROUGH — .pe-wf-* (solutions/workflow/*)
+   The pipeline carousel that replaced the stage-card grid. Same .pe-home prefix
+   rule as the blocks above: the element resets on h1–h4/p/ul carry specificity
+   (0,1,1) and would otherwise beat a single class here.
+
+   No new design tokens. Colour, radius, shadow, spacing and easing all come
+   from the scale at the top of this file; the only per-slide value is --c, the
+   stage accent, written from palette.ts.
+   ============================================================================= */
+
+/* ---- Head ----------------------------------------------------------------
+   Deliberately asymmetric where every other section on the page is centred:
+   copy left, controls right. The break is the signal that this section is
+   something to operate rather than something to read past. */
+.pe-home .pe-wf-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: var(--pe-s9);
+  margin-bottom: var(--pe-s9);
+}
+
+.pe-home .pe-wf-head-copy {
+  max-width: 44ch;
+}
+
+/* The bare .pe-lede margin loses to the `.pe-home p` reset (0,1,1); this wins
+   at (0,3,0) rather than relying on it. */
+.pe-home .pe-wf-head-copy .pe-lede {
+  margin-top: var(--pe-stack-gap);
+}
+
+.pe-home .pe-wf-head-nav {
+  padding-bottom: 6px;
+}
+
+/* ---- Embedded (homepage #platform) ----------------------------------------
+   The host section owns the heading, so the head here carries only the controls.
+   Left alone, the lone nav would drop into the grid's `1fr` track and strand
+   hard left under a centred heading, reading as a mistake. Collapsing to one
+   column and pushing the controls to the end instead makes them chrome on the
+   stage below — which is what they are — and keeps the section's asymmetry
+   without a second header competing with "One Platform."
+
+   At (0,3,0) this outranks both the base rule and the <=1000px override at
+   (0,2,0), so the alignment holds at every width regardless of source order;
+   that media query only re-declares grid-template-columns, and `justify-items`
+   survives it untouched. */
+.pe-home .pe-wf-embedded .pe-wf-head {
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: end;
+  margin-bottom: var(--pe-s6);
+}
+
+/* The 6px optical nudge existed to sit the controls on the lede's baseline.
+   With no copy to align to, it is just a gap. */
+.pe-home .pe-wf-embedded .pe-wf-head-nav {
+  padding-bottom: 0;
+}
+
+/* ---- Controls ------------------------------------------------------------- */
+.pe-home .pe-wf-nav {
+  display: flex;
+  align-items: center;
+  gap: var(--pe-s6);
+}
+
+.pe-home .pe-wf-counter {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 5px;
+  font-variant-numeric: tabular-nums;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--pe-text-3);
+}
+
+.pe-home .pe-wf-counter-now {
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--pe-text);
+}
+
+.pe-home .pe-wf-nav-btns {
+  display: flex;
+  gap: var(--pe-s2);
+}
+
+.pe-home .pe-wf-nav-btn {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid var(--pe-border);
+  background: var(--pe-surface);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: var(--pe-text-2);
+  transition:
+    transform 0.25s var(--pe-ease),
+    border-color 0.25s,
+    background 0.25s,
+    color 0.25s;
+}
+
+.pe-home .pe-wf-nav-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+.pe-home .pe-wf-nav-btn:hover {
+  transform: translateY(-2px);
+  border-color: var(--pe-border-strong);
+  background: var(--pe-surface-hover);
+  color: var(--pe-text);
+}
+
+.pe-home .pe-wf-nav-btn:active {
+  transform: translateY(0);
+}
+
+/* ---- Pipeline switch (pages with two pipelines) --------------------------- */
+.pe-home .pe-wf-variants {
+  display: inline-flex;
+  gap: 4px;
+  padding: 4px;
+  margin-bottom: var(--pe-s6);
+  border-radius: 999px;
+  border: 1px solid var(--pe-border);
+  background: var(--pe-surface);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.pe-home .pe-wf-variant {
+  padding: 9px 18px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--pe-text-3);
+  transition: color 0.25s, background 0.25s;
+}
+
+.pe-home .pe-wf-variant:hover {
+  color: var(--pe-text-2);
+}
+
+.pe-home .pe-wf-variant.is-active {
+  background: var(--pe-gradient-soft);
+  color: var(--pe-text);
+  box-shadow: var(--pe-shadow-sm);
+}
+
+/* ---- The stage frame ------------------------------------------------------ */
+.pe-home .pe-wf-stage {
+  padding: var(--pe-s7);
+  border: 1px solid var(--pe-border);
+  border-radius: var(--pe-radius-lg);
+  background: var(--pe-surface);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: var(--pe-shadow-lg);
+}
+
+.pe-home .pe-wf-viewport {
+  overflow: hidden;
+  border-radius: var(--pe-radius-sm);
+  /* Vertical scrolling still belongs to the page; horizontal drag is ours. */
+  touch-action: pan-y;
+}
+
+.pe-home .pe-wf-viewport.is-dragging {
+  user-select: none;
+  cursor: grabbing;
+}
+
+.pe-home .pe-wf-track {
+  display: flex;
+  transform: translate3d(calc(var(--wf-x, 0%) + var(--wf-drag, 0px)), 0, 0);
+  transition: transform 0.72s var(--pe-ease);
+  will-change: transform;
+}
+
+.pe-home .pe-wf-viewport.is-dragging .pe-wf-track {
+  transition: none;
+}
+
+/* ---- One slide ------------------------------------------------------------
+   Off-stage slides are dimmed and set back rather than hidden, so the ones
+   passing during a transition read as depth instead of as a filmstrip. */
+.pe-home .pe-wf-slide {
+  flex: 0 0 100%;
+  display: grid;
+  grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.18fr);
+  gap: var(--pe-s9);
+  align-items: center;
+  opacity: 0.16;
+  transform: scale(0.965);
+  transition: opacity 0.5s var(--pe-ease), transform 0.72s var(--pe-ease);
+}
+
+.pe-home .pe-wf-slide.is-active {
+  opacity: 1;
+  transform: none;
+}
+
+/* ---- Slide copy ----------------------------------------------------------- */
+.pe-home .pe-wf-step {
+  display: flex;
+  align-items: center;
+  gap: var(--pe-s3);
+}
+
+.pe-home .pe-wf-step-num {
+  font-size: 13px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.1em;
+  color: var(--c);
+}
+
+.pe-home .pe-wf-step-rule {
+  width: 28px;
+  height: 1px;
+  background: linear-gradient(90deg, var(--c), transparent);
+}
+
+.pe-home .pe-wf-step-of {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--pe-text-3);
+}
+
+.pe-home .pe-wf-title {
+  margin-top: var(--pe-s4);
+  font-size: clamp(26px, 2.6vw, 34px);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+
+.pe-home .pe-wf-desc {
+  margin-top: var(--pe-s4);
+  font-size: 17px;
+  line-height: 1.62;
+  color: var(--pe-text-2);
+}
+
+/* Names the product screen this stage happens on — prose, not a route, so it
+   is not styled as code. */
+.pe-home .pe-wf-where {
+  display: inline-block;
+  margin-top: var(--pe-s6);
+  padding: 6px 13px;
+  border-radius: 999px;
+  border: 1px solid var(--pe-border);
+  background: var(--pe-gradient-soft);
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--pe-text-2);
+}
+
+/* Copy enters in reading order once the slide lands. Four short steps — enough
+   to feel composed, not enough to make the reader wait for it. */
+.pe-home .pe-wf-slide .pe-wf-step,
+.pe-home .pe-wf-slide .pe-wf-title,
+.pe-home .pe-wf-slide .pe-wf-desc,
+.pe-home .pe-wf-slide .pe-wf-where {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.5s var(--pe-ease), transform 0.6s var(--pe-ease);
+}
+
+.pe-home .pe-wf-slide.is-active .pe-wf-step,
+.pe-home .pe-wf-slide.is-active .pe-wf-title,
+.pe-home .pe-wf-slide.is-active .pe-wf-desc,
+.pe-home .pe-wf-slide.is-active .pe-wf-where {
+  opacity: 1;
+  transform: none;
+}
+
+.pe-home .pe-wf-slide.is-active .pe-wf-step {
+  transition-delay: 0.10s;
+}
+
+.pe-home .pe-wf-slide.is-active .pe-wf-title {
+  transition-delay: 0.16s;
+}
+
+.pe-home .pe-wf-slide.is-active .pe-wf-desc {
+  transition-delay: 0.22s;
+}
+
+.pe-home .pe-wf-slide.is-active .pe-wf-where {
+  transition-delay: 0.28s;
+}
+
+/* ---- Slide media ---------------------------------------------------------- */
+.pe-home .pe-wf-frame {
+  position: relative;
+}
+
+/* The stage accent as light behind the window, so the colour that marks the
+   reader's position on the rail is the colour lighting the capture. */
+.pe-home .pe-wf-frame-glow {
+  position: absolute;
+  inset: -14% -10%;
+  z-index: 0;
+  pointer-events: none;
+  background: radial-gradient(58% 58% at 50% 46%, var(--c), transparent 70%);
+  filter: blur(38px);
+  opacity: 0;
+  transition: opacity 0.7s var(--pe-ease);
+}
+
+.pe-home .pe-wf-slide.is-active .pe-wf-frame-glow {
+  opacity: 0.32;
+}
+
+.pe-home[data-theme="light"] .pe-wf-slide.is-active .pe-wf-frame-glow {
+  opacity: 0.2;
+}
+
+.pe-home .pe-wf-media {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid var(--pe-border-strong);
+  border-radius: var(--pe-radius);
+  background: var(--pe-surface-solid);
+  box-shadow: var(--pe-shadow);
+  transform: scale(1.02);
+  transition: transform 0.72s var(--pe-ease), box-shadow 0.4s var(--pe-ease);
+}
+
+.pe-home .pe-wf-slide.is-active .pe-wf-media {
+  transform: none;
+}
+
+.pe-home .pe-wf-frame:hover .pe-wf-media {
+  box-shadow:
+    var(--pe-shadow-lg),
+    0 0 0 1px color-mix(in srgb, var(--c) 34%, transparent);
+}
+
+.pe-home .pe-wf-media-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--pe-s4);
+  padding: 11px var(--pe-s4);
+  border-bottom: 1px solid var(--pe-border);
+  background: linear-gradient(180deg, var(--pe-card-top), transparent);
+}
+
+.pe-home .pe-wf-media-screen {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--pe-text-2);
+}
+
+.pe-home .pe-wf-media-mark {
+  width: 9px;
+  height: 9px;
+  border-radius: 3px;
+  background: var(--c);
+}
+
+.pe-home .pe-wf-media-step {
+  font-size: 11px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.14em;
+  color: var(--pe-text-3);
+}
+
+/* One ratio for all ten stages. The captures are not one shape — a wide
+   deployment screen and a squarer upload screen sit in the same window — so the
+   window holds 16/9 and the asset is fitted inside it. That is what keeps the
+   slide the same height from stage 01 to stage 10, which is what keeps the rail
+   below from moving mid-walkthrough. Nothing scrolls in here: the frame shows
+   the whole screen or nothing. */
+.pe-home .pe-wf-media-body {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: var(--pe-bg-2);
+}
+
+/* scale-down, not contain: contain would blow a capture up past its own pixels
+   on a wide viewport. This fits the asset when the frame is smaller and leaves
+   it alone when the frame is larger — and the leftover on either axis is the
+   frame ground, so the 16/9 clip letterboxes instead of being cropped. */
+.pe-home .pe-wf-media-body img,
+.pe-home .pe-wf-media-body video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: scale-down;
+  object-position: center;
+  -webkit-user-drag: none;
+}
+
+.pe-home .pe-wf-media figcaption {
+  padding: 11px var(--pe-s4);
+  border-top: 1px solid var(--pe-border);
+  font-size: 12.5px;
+  color: var(--pe-text-3);
+}
+
+/* ---- Composed frame, used until a capture exists --------------------------
+   Not an empty box waiting to be filled: the window is the same size, chrome
+   and ground the capture will occupy, lit by the stage accent and carrying the
+   stage's own icon. Dropping a file into solutions.config replaces this and
+   changes nothing else. */
+.pe-home .pe-wf-media-field {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+}
+
+.pe-home .pe-wf-media-field>* {
+  grid-area: 1 / 1;
+}
+
+.pe-home .pe-wf-media-grid {
+  width: 100%;
+  height: 100%;
+  background-image:
+    linear-gradient(to right, var(--pe-grid) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--pe-grid) 1px, transparent 1px);
+  background-size: 44px 44px;
+  -webkit-mask-image: radial-gradient(70% 70% at 50% 50%, #000, transparent 78%);
+  mask-image: radial-gradient(70% 70% at 50% 50%, #000, transparent 78%);
+}
+
+.pe-home .pe-wf-media-light {
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(56% 56% at 50% 44%, color-mix(in srgb, var(--c) 24%, transparent), transparent 72%);
+}
+
+.pe-home .pe-wf-media-glyph {
+  display: grid;
+  place-items: center;
+  color: var(--c);
+  opacity: 0.62;
+}
+
+.pe-home .pe-wf-media-glyph svg {
+  width: clamp(48px, 8vw, 88px);
+  height: clamp(48px, 8vw, 88px);
+  stroke-width: 1.25;
+  filter: drop-shadow(0 8px 26px color-mix(in srgb, var(--c) 55%, transparent));
+}
+
+/* ---- The pipeline rail ----------------------------------------------------
+   Progress indicator and diagram in one object: the fill travelling the
+   hairline is the autoplay clock, and every node on it is the stage it names.
+   --wf-i / --wf-p are written by the carousel, the second one per frame. */
+.pe-home .pe-wf-rail {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(var(--wf-n, 1), minmax(0, 1fr));
+  /* No column gap on purpose: --wf-half assumes every dot sits at the centre of
+     an equal share of the rail, which a gap would shift. Nodes get their
+     breathing room from their own padding instead. */
+  gap: 0;
+  margin-top: var(--pe-s8);
+}
+
+.pe-home .pe-wf-rail-line {
+  position: absolute;
+  z-index: 0;
+  top: 6px;
+  left: var(--wf-half, 0%);
+  right: var(--wf-half, 0%);
+  height: 2px;
+  border-radius: 2px;
+  background: var(--pe-border-strong);
+}
+
+.pe-home .pe-wf-rail-fill {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #6366f1, #8b5cf6 38%, #06b6d4 72%, #22c55e);
+  clip-path: inset(0 calc(100% - (100% * (var(--wf-i, 0) + var(--wf-p, 0)) / var(--wf-den, 1))) 0 0);
+}
+
+.pe-home .pe-wf-node {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  justify-items: center;
+  gap: var(--pe-s3);
+  padding: 0 6px;
+  border: 0;
+  background: none;
+  text-align: center;
+}
+
+.pe-home .pe-wf-node-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--pe-bg-2);
+  border: 2px solid var(--pe-border-strong);
+  transition:
+    transform 0.35s var(--pe-ease),
+    background 0.35s,
+    border-color 0.35s,
+    box-shadow 0.35s;
+}
+
+.pe-home .pe-wf-node.is-done .pe-wf-node-dot {
+  background: var(--c);
+  border-color: transparent;
+}
+
+.pe-home .pe-wf-node.is-active .pe-wf-node-dot {
+  background: var(--c);
+  border-color: transparent;
+  transform: scale(1.3);
+  box-shadow:
+    0 0 0 5px color-mix(in srgb, var(--c) 18%, transparent),
+    0 0 22px color-mix(in srgb, var(--c) 62%, transparent);
+}
+
+.pe-home .pe-wf-node:hover .pe-wf-node-dot {
+  border-color: var(--c);
+  transform: scale(1.18);
+}
+
+.pe-home .pe-wf-node-label {
+  font-size: 11.5px;
+  font-weight: 500;
+  line-height: 1.35;
+  color: var(--pe-text-3);
+  opacity: 0.72;
+  transition: color 0.35s, opacity 0.35s;
+}
+
+.pe-home .pe-wf-node.is-done .pe-wf-node-label {
+  opacity: 0.9;
+}
+
+.pe-home .pe-wf-node.is-active .pe-wf-node-label {
+  color: var(--pe-text);
+  font-weight: 600;
+  opacity: 1;
+}
+
+.pe-home .pe-wf-note {
+  margin-top: var(--pe-s6);
+  text-align: center;
+  font-size: 14px;
+  color: var(--pe-text-3);
+}
+
+/* ---- Reduced motion -------------------------------------------------------
+   The walkthrough keeps working: autoplay is off (the carousel gates it), the
+   slide change is a cut rather than a slide, and the copy is simply there. */
+@media (prefers-reduced-motion: reduce) {
+
+  .pe-home .pe-wf-track,
+  .pe-home .pe-wf-slide,
+  .pe-home .pe-wf-media,
+  .pe-home .pe-wf-frame-glow,
+  .pe-home .pe-wf-node-dot,
+  .pe-home .pe-wf-node-label,
+  .pe-home .pe-wf-slide .pe-wf-step,
+  .pe-home .pe-wf-slide .pe-wf-title,
+  .pe-home .pe-wf-slide .pe-wf-desc,
+  .pe-home .pe-wf-slide .pe-wf-where {
+    transition: none;
+  }
+
+  .pe-home .pe-wf-slide,
+  .pe-home .pe-wf-media {
+    transform: none;
+  }
+
+  .pe-home .pe-wf-slide .pe-wf-step,
+  .pe-home .pe-wf-slide .pe-wf-title,
+  .pe-home .pe-wf-slide .pe-wf-desc,
+  .pe-home .pe-wf-slide .pe-wf-where {
+    opacity: 1;
+    transform: none;
+  }
+
+  .pe-home .pe-wf-nav-btn:hover {
+    transform: none;
+  }
+}
+
+/* ---- Responsive ------------------------------------------------------------ */
+@media (max-width: 1080px) {
+
+  /* Ten labels below ten dots stop being a map and start being a wall. Past
+     this width the rail keeps its dots and the slide title carries the name. */
+  .pe-home .pe-wf-node-label {
+    display: none;
+  }
+
+  .pe-home .pe-wf-rail {
+    margin-top: var(--pe-s7);
+  }
+}
+
+@media (max-width: 1000px) {
+  .pe-home .pe-wf-head {
+    grid-template-columns: 1fr;
+    align-items: start;
+    gap: var(--pe-s6);
+  }
+
+  .pe-home .pe-wf-head-copy {
+    max-width: none;
+  }
+
+  .pe-home .pe-wf-head-nav {
+    padding-bottom: 0;
+  }
+
+  .pe-home .pe-wf-slide {
+    grid-template-columns: 1fr;
+    gap: var(--pe-s7);
+  }
+
+  .pe-home .pe-wf-title {
+    font-size: clamp(24px, 4vw, 30px);
+  }
+}
+
+@media (max-width: 640px) {
+  .pe-home .pe-wf-stage {
+    padding: var(--pe-s4);
+  }
+
+  .pe-home .pe-wf-slide {
+    gap: var(--pe-s6);
+  }
+
+  .pe-home .pe-wf-desc {
+    font-size: 16px;
+  }
+
+  .pe-home .pe-wf-nav {
+    gap: var(--pe-s4);
+  }
+
+  .pe-home .pe-wf-counter-now {
+    font-size: 20px;
+  }
+
+  .pe-home .pe-wf-nav-btn {
+    width: 40px;
+    height: 40px;
+  }
+
+  /* Ten dots share about 30px each here. The rail stays a rail — it is the only
+     view of the whole pipeline on this screen — but the dots shrink and the
+     nodes grow a taller tap area than the dot they draw. Swipe and the arrows
+     are the primary way through at this size; the rail is the map. */
+  .pe-home .pe-wf-rail {
+    margin-top: var(--pe-s6);
+  }
+
+  /* A column is only ~29px wide here, so the tap target grows downward instead:
+     29 × 36 clears the 24px minimum for adjacent targets with room to spare. */
+  .pe-home .pe-wf-node {
+    padding: 0 2px;
+    min-height: 36px;
+    align-content: start;
+  }
+
+  .pe-home .pe-wf-node-dot {
+    width: 11px;
+    height: 11px;
+    border-width: 2px;
+  }
+
+  .pe-home .pe-wf-rail-line {
+    top: 4.5px;
+  }
+
+  .pe-home .pe-wf-node.is-active .pe-wf-node-dot {
+    box-shadow:
+      0 0 0 4px color-mix(in srgb, var(--c) 18%, transparent),
+      0 0 18px color-mix(in srgb, var(--c) 62%, transparent);
+  }
+
+  .pe-home .pe-wf-variants {
+    width: 100%;
+  }
+
+  .pe-home .pe-wf-variant {
+    flex: 1;
+    padding: 9px 12px;
+    font-size: 13px;
+  }
+}

@@ -1,0 +1,129 @@
+# ── Secrets – never commit real env files ──────────────────────────────────
+# Template / example files (safe to commit) are whitelisted below with ! rules.
+
+# All .env variants everywhere in the repo
+.env
+.env.*
+**/.env
+**/.env.*
+.env.dev
+
+# Explicitly allow example/template env files
+!.env.example
+!.env.*.example
+!**/.env.example
+!**/.env.*.example
+
+# ── Python ────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+*.whl
+.venv/
+venv/
+env/
+ENV/
+
+# ── Node / Next.js ────────────────────────────────────────────────────────
+node_modules/
+.next/
+.next-build/
+out/
+.npm/
+# Log files (all forms)
+*.log
+*.log.*
+logs/
+**/*.log
+**/logs/
+
+# ── OS ────────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+
+# ── IDE ───────────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.suo
+*.swp
+*~
+
+# ── Docker ────────────────────────────────────────────────────────────────
+*.tar
+
+# ── Coverage / test artefacts ─────────────────────────────────────────────
+.coverage
+htmlcov/
+.pytest_cache/
+.mypy_cache/
+
+# ── Device provisioning secret (written by device_client/provision.py) ─────
+device_client/config.json
+
+# ── Device-client release build artifacts (build_package.sh) ───────────────
+device_client/VERSION
+device_client/petal-device-*.tar.gz
+device_client/_dist/
+
+# ── Device-client runtime state (OTA install markers, per-device, per-machine) ──
+device_client/.state/
+
+.claude
+
+# (example/template env files are already whitelisted at the top of this file)
+
+
+#test_files
+test_PetalEdge.db
+test_PetalEdge_conftest.db
+test_pp_phase6.db
+test_project_target_device.db
+test_project_target_device_config.db
+
+#backend_backups
+backend_1608.zip
+backend_backup.zip
+
+#backend_test_files
+backend_test_files.zip
+backend/tests
+
+# =========================
+# Build / Temporary
+# =========================
+tmp/
+temp/
+*.tmp
+*.bak
+# Archives / backups – never commit
+*.zip
+*.tar.gz
+*.gz
+*.rar
+*.7z
+app/ref_screenshots/
+
+#MD files
+*.md
+
+# =========================
+# AI / Agent
+# =========================
+.claude/
+.agent/
+.agent_config/
+.agent_state/
+.agent_cache/
+
+#Backend_test_files
+backend/tests
+
+#Document
+docs

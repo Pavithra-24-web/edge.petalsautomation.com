@@ -1,0 +1,55 @@
+════════════════════════════════════════════════════════════════════════════
+ PRODUCTION — Linux (bash)
+════════════════════════════════════════════════════════════════════════════
+
+# Load env vars from .env.dev (exports MAX_TRAINING_WORKERS, DB/Redis URLs, etc.
+# into the shell so the commands below can reference them). Adjust the path if
+# your deploy uses a different env file.
+set -a && . ./.env.dev && set +a
+
+cd backend
+
+# API server — no --reload in production; --workers gives real multi-process
+# request handling instead of a single event loop.
+uvicorn app.main:app --host 0.0.0.0 --port 8010 --workers 4
+
+# CPU queues — Linux has os.fork(), so the default prefork pool gives real
+# process-level parallelism (bypasses the GIL), unlike the --pool=threads
+# workaround required on Windows below. Concurrency is read from
+# MAX_TRAINING_WORKERS in .env.dev rather than hardcoded.
+WORKER_DEVICE=cpu celery -A app.workers.celery_app worker -Q training_cpu,training,deployment,dsp,post_processing --loglevel=info --pool=prefork --concurrency=$MAX_TRAINING_WORKERS -n cpu@%h
+
+# GPU queue stays serial — only one process/GPU, so solo (concurrency 1) is
+# correct, not a limitation to fix. Never raise this worker's concurrency
+# above 1 unless the host actually has multiple GPUs.
+WORKER_DEVICE=gpu celery -A app.workers.celery_app worker -Q training_gpu --loglevel=info --pool=solo -n gpu@%h
+
+
+════════════════════════════════════════════════════════════════════════════
+ PRODUCTION — Windows (PowerShell)
+════════════════════════════════════════════════════════════════════════════
+
+# Load env vars from backend\.env into the current session (PowerShell has no
+# built-in "source .env" — this parses KEY=VALUE lines, skipping comments).
+Get-Content backend\.env | Where-Object { $_ -match '^\s*[^#][^=]*=' } | ForEach-Object {
+    $name, $value = $_.Split('=', 2)
+    Set-Item -Path "Env:$($name.Trim())" -Value $value.Trim()
+}
+
+cd backend
+
+# API server — no --reload in production.
+uvicorn app.main:app --host 0.0.0.0 --port 8010 --workers 4
+
+# CPU queues run concurrently via the thread pool (concurrency = MAX_TRAINING_WORKERS
+# in .env). Windows has no os.fork(), so prefork isn't usable here — threads is the
+# portable way to run several CPU-bound jobs from one queue at once.
+$env:WORKER_DEVICE = "cpu"
+celery -A app.workers.celery_app worker -Q training_cpu,training,deployment,dsp,post_processing --loglevel=info --pool=threads --concurrency=$env:MAX_TRAINING_WORKERS -n cpu@%h
+
+# GPU queue stays serial — only one process/GPU, so solo (concurrency 1) is correct,
+# not a limitation to fix. Never raise this worker's concurrency above 1.
+$env:WORKER_DEVICE = "gpu"
+celery -A app.workers.celery_app worker -Q training_gpu --loglevel=info --pool=solo -n gpu@%h
+ $env:WORKER_DEVICE="cpu"; celery -A app.workers.celery_app worker -Q training_cpu,training,deployment,dsp,post_processing --loglevel=info --pool=threads -n cpu@%h
+py -3.10 -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8010    

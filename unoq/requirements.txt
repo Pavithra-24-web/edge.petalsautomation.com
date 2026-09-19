@@ -1,0 +1,15 @@
+# UNO Q runtime — Python dependencies
+#
+# Minimum (online presence + OTA only):
+aiohttp>=3.9
+
+# Inference (required for local TFLite execution):
+numpy>=1.24
+tflite-runtime>=2.14      # preferred; ARM wheels at https://github.com/google-coral/pycoral/releases
+# tensorflow>=2.13        # fallback if tflite-runtime wheels are unavailable for your SoC
+
+# Image pre-processing (required for image/FOMO models):
+Pillow>=10.0
+
+# Live camera capture (optional; set UNOQ_TEST_IMAGE instead if no camera):
+# opencv-python>=4.8      # uncomment if camera is attached
