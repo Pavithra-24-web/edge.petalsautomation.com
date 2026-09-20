@@ -6,20 +6,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: frontend
+  name: web
   namespace: petaledge
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: frontend
+      app: web
   template:
     metadata:
       labels:
-        app: frontend
+        app: web
     spec:
       containers:
-        - name: frontend
+        - name: web
           image: petaledge-frontend:local
           imagePullPolicy: Never
           ports:
@@ -36,11 +36,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: frontend
+  name: web
   namespace: petaledge
 spec:
   selector:
-    app: frontend
+    app: web
   ports:
     - port: 80
       targetPort: 80

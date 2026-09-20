@@ -219,6 +219,6 @@ jobs:
           kubectl apply -f /tmp/rendered/backend-deployment.yaml
           kubectl apply -f /tmp/rendered/worker-cpu-deployment.yaml
           kubectl apply -f /tmp/rendered/frontend-deployment.yaml
-          kubectl rollout status deployment/backend -n petaledge --timeout=300s
+          kubectl rollout status deployment/api -n petaledge --timeout=300s
           kubectl rollout status deployment/worker-cpu -n petaledge --timeout=300s
-          kubectl rollout status deployment/frontend -n petaledge --timeout=300s
+          kubectl rollout status deployment/web -n petaledge --timeout=300s

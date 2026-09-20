@@ -2,22 +2,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: frontend
+  name: web
   namespace: petaledge
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: frontend
+      app: web
   template:
     metadata:
       labels:
-        app: frontend
+        app: web
     spec:
       imagePullSecrets:
         - name: ghcr-pull-secret
       containers:
-        - name: frontend
+        - name: web
           image: __FRONTEND_IMAGE__
           ports:
             - containerPort: 80
@@ -36,12 +36,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: frontend
+  name: web
   namespace: petaledge
 spec:
   type: LoadBalancer
   selector:
-    app: frontend
+    app: web
   ports:
     - port: 80
       targetPort: 80

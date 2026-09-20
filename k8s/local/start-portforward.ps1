@@ -1,5 +1,5 @@
 # Idempotent health-check-and-heal for the local Kubernetes port-forwards
-# (localhost:8010 -> backend, localhost:3000 -> frontend).
+# (localhost:8010 -> api, localhost:3000 -> web).
 #
 # kubectl port-forward is just a local tunnel process, not a persistent
 # service - it dies on every Docker Desktop restart even though the pods
@@ -60,10 +60,10 @@ Get-CimInstance Win32_Process -Filter "Name = 'kubectl.exe'" -ErrorAction Silent
         Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue
     }
 
-kubectl wait --for=condition=ready pod -l app=backend -n petaledge --timeout=90s *>> $logFile
-kubectl wait --for=condition=ready pod -l app=frontend -n petaledge --timeout=90s *>> $logFile
+kubectl wait --for=condition=ready pod -l app=api -n petaledge --timeout=90s *>> $logFile
+kubectl wait --for=condition=ready pod -l app=web -n petaledge --timeout=90s *>> $logFile
 
-Start-Process -WindowStyle Hidden -FilePath "kubectl" -ArgumentList "port-forward -n petaledge svc/backend 8010:80"
-Start-Process -WindowStyle Hidden -FilePath "kubectl" -ArgumentList "port-forward -n petaledge svc/frontend 3000:80"
+Start-Process -WindowStyle Hidden -FilePath "kubectl" -ArgumentList "port-forward -n petaledge svc/api 8010:80"
+Start-Process -WindowStyle Hidden -FilePath "kubectl" -ArgumentList "port-forward -n petaledge svc/web 3000:80"
 
-Log "Port-forwards started: backend -> localhost:8010, frontend -> localhost:3000"
+Log "Port-forwards started: api -> localhost:8010, web -> localhost:3000"

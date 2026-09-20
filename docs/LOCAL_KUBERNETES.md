@@ -72,7 +72,7 @@ kubectl get pods -n petaledge -w
 ```
 
 Everything should reach `Running` (`postgres`/`redis`/`minio` first, then
-`migrate-local` runs to `Completed`, then `backend`/`worker-cpu`/`frontend`
+`migrate-local` runs to `Completed`, then `api`/`worker-cpu`/`web`
 go `Running`). Ctrl+C once they're all healthy.
 
 If something sits in `Pending` or `CrashLoopBackOff`:
@@ -88,8 +88,8 @@ These Services are `ClusterIP` (internal-only), so forward their ports to
 your machine:
 
 ```bash
-kubectl port-forward -n petaledge svc/backend 8010:80
-kubectl port-forward -n petaledge svc/frontend 3000:80
+kubectl port-forward -n petaledge svc/api 8010:80
+kubectl port-forward -n petaledge svc/web 3000:80
 kubectl port-forward -n petaledge svc/minio 9000:9000   # only if testing uploads
 ```
 
@@ -120,7 +120,7 @@ container image):
 
 ```bash
 docker build -t petaledge-backend:local -f backend/Dockerfile .
-kubectl rollout restart deployment/backend -n petaledge
+kubectl rollout restart deployment/api -n petaledge
 ```
 
 (For everyday backend/frontend development, `make backend` / `make frontend`

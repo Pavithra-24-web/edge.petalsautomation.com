@@ -139,11 +139,11 @@ Push to `main` (or merge this branch into it). Watch the run in the
 - build + push both images,
 - apply everything under `k8s/`,
 - run `alembic upgrade head` as a one-off Job,
-- roll out `backend`, `worker-cpu`, and `frontend`.
+- roll out `api`, `worker-cpu`, and `web`.
 
 ## 5. Bootstrap step: wire up the external addresses
 
-`backend`, `frontend`, and `minio-external` are all `type: LoadBalancer`
+`api`, `web`, and `minio-external` are all `type: LoadBalancer`
 Services — Linode's cloud-controller-manager gives each one its own external
 IP automatically (each is a small monthly cost — see **Costs** below). Two
 things in this repo reference those addresses *before they exist*, so one
@@ -151,7 +151,7 @@ follow-up round is needed after the very first deploy:
 
 ```bash
 kubectl get svc -n petaledge
-# note the EXTERNAL-IP for backend, frontend, and minio-external
+# note the EXTERNAL-IP for api, web, and minio-external
 ```
 
 1. **Frontend's API URL** — `NEXT_PUBLIC_API_URL` / `NEXT_PUBLIC_WS_URL` are
@@ -159,15 +159,15 @@ kubectl get svc -n petaledge
    export, calling the API straight from the browser). Set them as GitHub
    Actions **variables** (not secrets — they end up in public client code):
    Settings → Secrets and variables → Actions → **Variables** tab:
-   - `NEXT_PUBLIC_API_URL` = `http://<backend EXTERNAL-IP>`
-   - `NEXT_PUBLIC_WS_URL` = `ws://<backend EXTERNAL-IP>`
+   - `NEXT_PUBLIC_API_URL` = `http://<api EXTERNAL-IP>`
+   - `NEXT_PUBLIC_WS_URL` = `ws://<api EXTERNAL-IP>`
    - `NEXT_PUBLIC_GOOGLE_CLIENT_ID` = your OAuth client ID, if used
 
-2. **Backend's public config** — edit
+2. **API's public config** — edit
    [`k8s/configmap.yaml`](../k8s/configmap.yaml) and replace the two
    `CHANGE-ME` placeholders:
    - `S3_PUBLIC_ENDPOINT` → `http://<minio-external EXTERNAL-IP>:9000`
-   - `FRONTEND_URL` / `CORS_ORIGINS` → `http://<frontend EXTERNAL-IP>`
+   - `FRONTEND_URL` / `CORS_ORIGINS` → `http://<web EXTERNAL-IP>`
 
 Commit the configmap change and push to `main` again — this re-triggers the
 pipeline, rebuilding the frontend with the real API URL and reapplying the
@@ -179,17 +179,17 @@ instead and get TLS via an Ingress — see **Next steps**.)
 - LKE control plane: free (non-HA).
 - Each node in the pool: billed hourly like a regular Linode.
 - Each `LoadBalancer` Service: provisions a Linode NodeBalancer (~$10/month).
-  This setup has three (`backend`, `frontend`, `minio-external`) — see
+  This setup has three (`api`, `web`, `minio-external`) — see
   **Next steps** for how to collapse that to one later.
 
 ## Day-2 operations
 
 ```bash
 kubectl get pods -n petaledge                 # is everything Running?
-kubectl logs -n petaledge deploy/backend -f   # tail backend logs
+kubectl logs -n petaledge deploy/api -f       # tail API logs
 kubectl logs -n petaledge deploy/worker-cpu -f
 kubectl get svc -n petaledge                  # external IPs
-kubectl rollout undo deployment/backend -n petaledge   # roll back a bad deploy
+kubectl rollout undo deployment/api -n petaledge   # roll back a bad deploy
 ```
 
 Every push to `main` redeploys automatically. There's no manual `kubectl
