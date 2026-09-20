@@ -97,7 +97,6 @@ backend_backup.zip
 
 #backend_test_files
 backend_test_files.zip
-backend/tests
 
 # =========================
 # Build / Temporary
@@ -126,8 +125,10 @@ app/ref_screenshots/
 .agent_state/
 .agent_cache/
 
-#Backend_test_files
-backend/tests
-
-#Document
-docs
+#Document — everything except the CI/CD setup guides stays local-only.
+# (Can't negate individual files under a fully-excluded directory, so this
+# excludes contents rather than the directory itself — see git's own docs
+# on "NOTE" under gitignore pattern format.)
+docs/*
+!docs/CI_CD_SETUP.md
+!docs/LOCAL_KUBERNETES.md
