@@ -472,7 +472,7 @@ export default function TargetDeviceConfigDialog({ open, onClose }: Props) {
             <h4 className="pe-tdconf-section-title">Application budget</h4>
             <p className="pe-tdconf-intro">
               Set the RAM, ROM and latency your model may use on this device. Leave a
-              field blank to keep the board's own figure.
+              field blank to keep the board&apos;s own figure.
             </p>
 
             {!hasDevice ? (
@@ -724,7 +724,7 @@ function BudgetField({
       </p>
       {invalid && (
         <p className="pe-tdconf-field-error">
-          Enter a positive number, or leave blank to use the board's value.
+          Enter a positive number, or leave blank to use the board&apos;s value.
         </p>
       )}
     </Row>
@@ -865,7 +865,7 @@ function BoardPicker({
             ) : filteredProduction.length === 0 &&
               filteredDevelopment.length === 0 &&
               filteredDeploymentReady.length === 0 ? (
-              <p className="pe-tdconf-board-empty">No board matches "{query}".</p>
+              <p className="pe-tdconf-board-empty">No board matches &quot;{query}&quot;.</p>
             ) : (
               <>
                 {filteredDeploymentReady.length > 0 && (

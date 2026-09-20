@@ -497,7 +497,7 @@ function ApiKeysSection() {
               onClick={() => setCreatedKey(null)}
               className="pe-keys-callout-dismiss"
             >
-              I've saved the key, dismiss this
+              I&apos;ve saved the key, dismiss this
             </button>
           </div>
         )}

@@ -572,7 +572,7 @@ export default function DeviceCatalogPage() {
       {!loading && error && (
         <div className="pe-cat-state">
           <AlertTriangle size={22} />
-          <span>Couldn't load the device catalog.</span>
+          <span>Couldn&apos;t load the device catalog.</span>
           <button onClick={load} className="btn-secondary">
             <RotateCw size={14} /> Retry
           </button>

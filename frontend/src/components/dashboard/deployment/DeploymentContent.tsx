@@ -672,7 +672,7 @@ export default function DeploymentContent() {
                     </p>
                   )}
                   <p className="mt-3 text-[13px]" style={{ color: "var(--app-text-soft)" }}>
-                    Set in this project's target device settings.
+                    Set in this project&apos;s target device settings.
                   </p>
                 </div>
               ) : (
