@@ -13,7 +13,7 @@ spec:
       restartPolicy: Never
       containers:
         - name: migrate
-          image: petaledge-backend:local
+          image: petaledge-api:local
           imagePullPolicy: Never
           command: ["alembic", "upgrade", "head"]
           envFrom:

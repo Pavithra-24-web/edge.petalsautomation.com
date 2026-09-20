@@ -1,6 +1,6 @@
 # LOCAL TESTING variant of ../frontend-deployment.yaml. Remember: NEXT_PUBLIC_*
 # is baked in at build time, so build this image with:
-#   docker build -t petaledge-frontend:local ^
+#   docker build -t petaledge-web:local ^
 #     --build-arg NEXT_PUBLIC_API_URL=http://localhost:8010 ^
 #     --build-arg NEXT_PUBLIC_WS_URL=ws://localhost:8010 frontend
 apiVersion: apps/v1
@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
         - name: web
-          image: petaledge-frontend:local
+          image: petaledge-web:local
           imagePullPolicy: Never
           ports:
             - containerPort: 80

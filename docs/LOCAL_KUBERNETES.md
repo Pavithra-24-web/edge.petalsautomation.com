@@ -34,9 +34,9 @@ From the repo root:
 ```bash
 # Backend's build context is the repo root, not backend/ — its Dockerfile
 # also needs the sibling unoq/ directory (embedded into .pxe device packages).
-docker build -t petaledge-backend:local -f backend/Dockerfile .
+docker build -t petaledge-api:local -f backend/Dockerfile .
 
-docker build -t petaledge-frontend:local \
+docker build -t petaledge-web:local \
   --build-arg NEXT_PUBLIC_API_URL=http://localhost:8010 \
   --build-arg NEXT_PUBLIC_WS_URL=ws://localhost:8010 \
   frontend
@@ -119,7 +119,7 @@ Every code change needs a rebuild + restart (there's no hot-reload in a
 container image):
 
 ```bash
-docker build -t petaledge-backend:local -f backend/Dockerfile .
+docker build -t petaledge-api:local -f backend/Dockerfile .
 kubectl rollout restart deployment/api -n petaledge
 ```
 

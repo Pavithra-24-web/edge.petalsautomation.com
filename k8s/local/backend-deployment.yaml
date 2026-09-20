@@ -1,5 +1,5 @@
 # LOCAL TESTING variant of ../backend-deployment.yaml:
-#  - image built straight on your machine (`docker build -t petaledge-backend:local -f backend/Dockerfile .` from the repo root)
+#  - image built straight on your machine (`docker build -t petaledge-api:local -f backend/Dockerfile .` from the repo root)
 #  - imagePullPolicy: Never — don't try to pull from any registry, use the local image
 #  - no imagePullSecrets — nothing to authenticate to
 #  - Service left as ClusterIP (default) — reach it with `kubectl port-forward`
@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
         - name: api
-          image: petaledge-backend:local
+          image: petaledge-api:local
           imagePullPolicy: Never
           ports:
             - containerPort: 8000
