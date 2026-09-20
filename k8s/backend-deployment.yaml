@@ -3,22 +3,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: backend
+  name: api
   namespace: petaledge
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: backend
+      app: api
   template:
     metadata:
       labels:
-        app: backend
+        app: api
     spec:
       imagePullSecrets:
         - name: ghcr-pull-secret
       containers:
-        - name: backend
+        - name: api
           image: __BACKEND_IMAGE__
           ports:
             - containerPort: 8000
@@ -40,7 +40,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: backend
+  name: api
   namespace: petaledge
 spec:
   # Static-export frontend calls NEXT_PUBLIC_API_URL directly from the
@@ -48,7 +48,7 @@ spec:
   # the frontend). See docs/CI_CD_SETUP.md for the resulting bootstrap step.
   type: LoadBalancer
   selector:
-    app: backend
+    app: api
   ports:
     - port: 80
       targetPort: 8000

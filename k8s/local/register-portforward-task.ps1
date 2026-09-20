@@ -29,7 +29,7 @@ $settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoi
     -MultipleInstances IgnoreNew
 
 Register-ScheduledTask -TaskName $taskName -Action $action -Trigger $trigger -Settings $settings `
-    -Description "Checks every 2 minutes whether PetalEdge's local Kubernetes port-forwards (backend:8010, frontend:3000) are up, and restarts them if Docker/Kubernetes are ready but the tunnels aren't." `
+    -Description "Checks every 2 minutes whether PetalEdge's local Kubernetes port-forwards (api:8010, web:3000) are up, and restarts them if Docker/Kubernetes are ready but the tunnels aren't." `
     -Force
 
 Write-Host "Registered scheduled task '$taskName' - it starts checking at your next login, every 2 minutes."
