@@ -4273,9 +4273,20 @@ def test_fomo_export_model_rewiring_keras3_compat():
         f"Export model input must match backbone shape, got {export_model.input_shape}"
     )
 
-    # - It must be a valid Keras model that can be converted to TFLite
-    converter = tf.lite.TFLiteConverter.from_keras_model(export_model)
-    tflite_model = converter.convert()
+    # - It must be a valid Keras model that can be converted to TFLite.
+    # NOT via TFLiteConverter.from_keras_model() directly: with tensorflow==
+    # 2.16.1's Keras 3, that path re-traces through tf.saved_model.save()
+    # internally and aborts the *process* with SIGABRT (see
+    # _convert_to_tflite's docstring in training_worker.py) - a C++ abort(),
+    # not a Python exception, so it can't be caught and crashes the whole
+    # test run. model.export() + from_saved_model() is the same safe path
+    # production code uses (_strategy_keras_export).
+    import tempfile
+    with tempfile.TemporaryDirectory() as tmpdir:
+        saved_model_path = f"{tmpdir}/saved_model"
+        export_model.export(saved_model_path)
+        converter = tf.lite.TFLiteConverter.from_saved_model(saved_model_path)
+        tflite_model = converter.convert()
     assert tflite_model is not None, "TFLite conversion of rewired model failed"
 
 
