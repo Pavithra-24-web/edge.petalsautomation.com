@@ -39,6 +39,21 @@ is actually green.
 
 Workflow file: [`.github/workflows/ci-cd.yml`](../.github/workflows/ci-cd.yml).
 
+## Allowing Actions to open the PR (one-time GitHub setting)
+
+By default GitHub blocks `GITHUB_TOKEN` from creating pull requests at all,
+regardless of the `pull-requests: write` permission declared in the workflow
+— it's a separate repo-level toggle. Without this, `open-pr` fails with:
+
+```
+pull request create failed: GraphQL: GitHub Actions is not permitted to
+create or approve pull requests (createPullRequest)
+```
+
+To fix: repo → **Settings → Actions → General** → scroll to **"Workflow
+permissions"** → check **"Allow GitHub Actions to create and approve pull
+requests"** → **Save**.
+
 ## Requiring PR review (one-time GitHub setting)
 
 This has to be set on github.com — it's a repository policy, not something a
