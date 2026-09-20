@@ -9,6 +9,38 @@ import { createPortal } from "react-dom";
 
 export type SplitKey = "training" | "testing" | "postprocessing";
 
+// ─── Sample metadata formatters ───────────────────────────────────────────────
+// Used by MotionSignalViewer's detail panel (and available to any other
+// labeling view that needs the same sample_type/frequency_hz/duration_ms/
+// created_at fields formatted consistently).
+
+export function formatDate(value?: string | null): string {
+  if (!value) return "—";
+  const d = new Date(value);
+  if (Number.isNaN(d.getTime())) return "—";
+  return d.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
+}
+
+export function formatDuration(ms?: number | null): string {
+  if (ms === null || ms === undefined || Number.isNaN(ms)) return "—";
+  if (ms < 1000) return `${Math.round(ms)}ms`;
+  return `${(ms / 1000).toFixed(1)}s`;
+}
+
+export function formatFrequency(hz?: number | null): string {
+  if (hz === null || hz === undefined || Number.isNaN(hz)) return "—";
+  if (hz >= 1000) return `${(hz / 1000).toFixed(hz % 1000 === 0 ? 0 : 1)} kHz`;
+  return `${hz % 1 === 0 ? hz : hz.toFixed(1)} Hz`;
+}
+
+export function splitLabel(value?: string | null): string {
+  if (!value) return "—";
+  return value
+    .split("_")
+    .map((w) => (w.length ? w[0].toUpperCase() + w.slice(1) : w))
+    .join(" ");
+}
+
 // ─── Donut chart (SVG, no extra deps) ─────────────────────────────────────────
 // 50-color premium palette — light & dark tones strictly interleaved
 // (light → dark → light → dark …) so alphabetically-adjacent labels always

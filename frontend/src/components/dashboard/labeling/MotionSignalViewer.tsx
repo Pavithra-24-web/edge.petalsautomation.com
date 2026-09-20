@@ -6,7 +6,7 @@ import {
   ReferenceLine,
 } from "recharts";
 import { X, Activity, AlertTriangle, Loader2 } from "lucide-react";
-import { useAppStore, type Impulse } from "@/store/appStore";
+import { useAppStore } from "@/store/appStore";
 import { formatDate, formatDuration, formatFrequency, splitLabel } from "./LabelingShared";
 import { fetchSampleSignal, type SampleSignal } from "./sampleSignalCache";
 import { buildSignalChartData, toggleAxisVisibility } from "./motionSignalChart";
@@ -83,7 +83,18 @@ type ViewerState = "loading" | "ready" | "empty" | "error";
 // with, matching Batch 8's own "keyed off savedActiveImpulse" precedent. When
 // neither resolves (no impulse selected yet, e.g. a project with none created),
 // no overlay is drawn — the signal renders exactly as before, unchanged.
-function useResolvedWindowingImpulse(): Impulse | null {
+// appStore types activeImpulse/savedActiveImpulse as `any` (no shared Impulse
+// type exists in the codebase) — this narrows to just the fields this file reads.
+type WindowingImpulse = {
+  project_id: string;
+  input_type: string;
+  frequency_hz?: number;
+  window_size_ms: number;
+  window_increase_ms: number;
+  zero_pad_allowed?: boolean;
+};
+
+function useResolvedWindowingImpulse(): WindowingImpulse | null {
   const { activeProject, activeImpulse, savedActiveImpulse } = useAppStore();
   return useMemo(() => {
     if (!activeProject) return null;
@@ -94,7 +105,7 @@ function useResolvedWindowingImpulse(): Impulse | null {
           ? activeImpulse
           : null;
     if (!candidate || candidate.input_type !== "time-series") return null;
-    return candidate as Impulse;
+    return candidate as WindowingImpulse;
   }, [activeProject?.id, activeImpulse, savedActiveImpulse]);
 }
 

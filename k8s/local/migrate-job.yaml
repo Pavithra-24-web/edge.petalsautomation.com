@@ -1,0 +1,21 @@
+# LOCAL TESTING variant of ../migrate-job.yaml — fixed name since you'll just
+# re-run `kubectl delete job/migrate-local` + apply between test runs, no
+# need for a unique name per run like CI does.
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: migrate-local
+  namespace: petaledge
+spec:
+  backoffLimit: 2
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: migrate
+          image: petaledge-backend:local
+          imagePullPolicy: Never
+          command: ["alembic", "upgrade", "head"]
+          envFrom:
+            - configMapRef: { name: app-config }
+            - secretRef: { name: app-secrets }

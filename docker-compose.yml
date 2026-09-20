@@ -37,7 +37,9 @@ services:
 
   minio:
     container_name: petaledge-minio
-    image: minio/minio:latest
+    # minio/minio on Docker Hub no longer serves pulls for the OSS image
+    # ("pull access denied... insufficient_scope") — now published on quay.io.
+    image: quay.io/minio/minio:latest
     restart: unless-stopped
     profiles:
       - minio

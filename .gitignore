@@ -14,6 +14,10 @@
 !**/.env.example
 !**/.env.*.example
 
+# Local-testing Kubernetes secret (throwaway values, but keep the same
+# never-commit-a-filled-in-secret habit as the .env rules above)
+k8s/local/secret.yaml
+
 # ── Python ────────────────────────────────────────────────────────────────
 __pycache__/
 *.py[cod]

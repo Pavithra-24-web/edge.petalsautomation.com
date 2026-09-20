@@ -174,6 +174,7 @@ export const samplesApi = {
     api.get(`/samples/project/${projectId}/unlabeled-queue`),
   get: (id: string) => api.get(`/samples/${id}`),
   download: (id: string) => api.get(`/samples/${id}/download`),
+  signal: (id: string) => api.get(`/samples/${id}/signal`),
   assignLabel: (id: string, labelId: string) => api.patch(`/samples/${id}/label`, { label_id: labelId }),
   updateSplit: (id: string, sampleType: string) => api.patch(`/samples/${id}/split`, { sample_type: sampleType }),
   update: (id: string, data: any) => api.patch(`/samples/${id}`, data),
@@ -224,6 +225,20 @@ export const impulsesApi = {
 };
 
 // ─── DSP ──────────────────────────────────────────────────────────────────────
+// Shape of GET /dsp/dataset-summary (backend/app/api/v1/endpoints/dsp.py).
+// window_count/skipped_too_short aren't returned by that endpoint today —
+// GenerateFeaturesShell falls back to "Not available" when they're absent —
+// kept optional here so a future motion-specific summary can add them.
+export interface DatasetSummaryResponse {
+  total_samples: number;
+  test_samples: number;
+  num_classes: number;
+  class_names: string[];
+  background_samples: number;
+  window_count?: number;
+  skipped_too_short?: number;
+}
+
 export const dspApi = {
   /** Legacy — full unfiltered block list */
   blocks: () => api.get("/dsp/blocks"),

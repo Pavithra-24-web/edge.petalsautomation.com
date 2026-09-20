@@ -1,0 +1,110 @@
+# In-cluster S3-compatible object storage, for parity with docker-compose's
+# "minio" profile. Fine for getting started; consider moving to Linode Object
+# Storage (or AWS S3) later so object data doesn't live on a single pod's
+# volume. See docs/CI_CD_SETUP.md for the S3_PUBLIC_ENDPOINT bootstrap step
+# this needs.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: minio-data
+  namespace: petaledge
+spec:
+  accessModes: ["ReadWriteOnce"]
+  resources:
+    requests:
+      storage: 20Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: minio
+  namespace: petaledge
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: minio
+  template:
+    metadata:
+      labels:
+        app: minio
+    spec:
+      containers:
+        - name: minio
+          # minio/minio on Docker Hub no longer serves pulls for the OSS
+          # image ("pull access denied... insufficient_scope") — MinIO now
+          # publishes it on quay.io instead.
+          image: quay.io/minio/minio:latest
+          args: ["server", "/data", "--console-address", ":9001"]
+          ports:
+            - containerPort: 9000
+            - containerPort: 9001
+          env:
+            - name: MINIO_ROOT_USER
+              valueFrom:
+                secretKeyRef: { name: app-secrets, key: S3_ACCESS_KEY }
+            - name: MINIO_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef: { name: app-secrets, key: S3_SECRET_KEY }
+          volumeMounts:
+            - name: data
+              mountPath: /data
+          readinessProbe:
+            httpGet: { path: /minio/health/live, port: 9000 }
+            initialDelaySeconds: 10
+            periodSeconds: 15
+          livenessProbe:
+            httpGet: { path: /minio/health/live, port: 9000 }
+            initialDelaySeconds: 20
+            periodSeconds: 30
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: minio-data
+---
+# Internal address the backend/workers use (matches S3_ENDPOINT in configmap.yaml).
+apiVersion: v1
+kind: Service
+metadata:
+  name: minio
+  namespace: petaledge
+spec:
+  selector:
+    app: minio
+  ports:
+    - name: api
+      port: 9000
+      targetPort: 9000
+---
+# External address so presigned URLs generated for the browser are reachable.
+# Linode's cloud-controller-manager provisions a NodeBalancer for this
+# automatically. The admin console (9001) is deliberately NOT exposed here —
+# reach it with `kubectl port-forward -n petaledge svc/minio-console 9001:9001`.
+apiVersion: v1
+kind: Service
+metadata:
+  name: minio-external
+  namespace: petaledge
+spec:
+  type: LoadBalancer
+  selector:
+    app: minio
+  ports:
+    - name: api
+      port: 9000
+      targetPort: 9000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: minio-console
+  namespace: petaledge
+spec:
+  selector:
+    app: minio
+  ports:
+    - name: console
+      port: 9001
+      targetPort: 9001

@@ -1,0 +1,38 @@
+# LOCAL TESTING variant of ../worker-cpu-deployment.yaml — same image as the
+# local backend Deployment, just running the Celery command instead.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: worker-cpu
+  namespace: petaledge
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: worker-cpu
+  template:
+    metadata:
+      labels:
+        app: worker-cpu
+    spec:
+      containers:
+        - name: worker-cpu
+          image: petaledge-backend:local
+          imagePullPolicy: Never
+          command:
+            - celery
+            - -A
+            - app.workers.celery_app
+            - worker
+            - -Q
+            - training_cpu,dsp,deployment,post_processing,cpu_default,training
+            - --concurrency=2
+            - --hostname=cpu@%h
+            - -l
+            - info
+          env:
+            - name: WORKER_DEVICE
+              value: "cpu"
+          envFrom:
+            - configMapRef: { name: app-config }
+            - secretRef: { name: app-secrets }

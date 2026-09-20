@@ -1,0 +1,53 @@
+# Non-secret configuration. Real credentials live in the "app-secrets" Secret,
+# created by the CI/CD workflow from GitHub Actions secrets — see
+# docs/CI_CD_SETUP.md. Nothing sensitive belongs in this file.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  namespace: petaledge
+data:
+  APP_ENV: "production"
+  DEBUG: "false"
+  # Boot fails loudly on schema drift in a real deployment instead of serving
+  # against an unmigrated DB (see backend/app/core/config.py).
+  FAIL_ON_SCHEMA_DRIFT: "true"
+
+  POSTGRES_HOST: "postgres"
+  POSTGRES_PORT: "5432"
+  POSTGRES_DB: "petaledge"
+  POSTGRES_USER: "petaledge"
+
+  REDIS_URL: "redis://redis:6379/0"
+  CELERY_BROKER_URL: "redis://redis:6379/1"
+  CELERY_RESULT_BACKEND: "redis://redis:6379/2"
+
+  S3_ENDPOINT: "http://minio:9000"
+  # TODO: after the first `kubectl apply -f k8s/`, the minio Service gets a
+  # Linode NodeBalancer external IP (`kubectl get svc -n petaledge minio`).
+  # Set this to that IP/domain so browser-facing presigned URLs are reachable
+  # from outside the cluster, then re-apply. See docs/CI_CD_SETUP.md.
+  S3_PUBLIC_ENDPOINT: "http://CHANGE-ME-MINIO-EXTERNAL-IP:9000"
+  S3_BUCKET: "petaledge"
+  S3_REGION: "us-east-1"
+
+  JWT_ALGORITHM: "HS256"
+  JWT_EXPIRE_MINUTES: "1440"
+
+  MAX_TRAINING_WORKERS: "2"
+  # No GPU node pool wired up yet — GPU training requests are rejected
+  # outright until this is enabled (see backend/app/core/config.py).
+  GPU_ENABLED: "false"
+
+  # TODO: same bootstrap gotcha as S3_PUBLIC_ENDPOINT above — set this to the
+  # frontend Service's external IP/domain once known.
+  FRONTEND_URL: "http://CHANGE-ME-FRONTEND-EXTERNAL-IP"
+  CORS_ORIGINS: '["http://CHANGE-ME-FRONTEND-EXTERNAL-IP"]'
+
+  GOOGLE_CLIENT_ID: ""
+
+  SMTP_HOST: "smtp.gmail.com"
+  SMTP_PORT: "587"
+  SMTP_FROM: ""
+  DEMO_NOTIFY_EMAIL: ""
+  EMAIL_LOGO_URL: ""

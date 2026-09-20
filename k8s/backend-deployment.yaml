@@ -1,0 +1,54 @@
+# __BACKEND_IMAGE__ is replaced by the CI/CD workflow with the freshly built
+# image tag (e.g. ghcr.io/owner/repo-backend:<git-sha>) before this is applied.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  namespace: petaledge
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      imagePullSecrets:
+        - name: ghcr-pull-secret
+      containers:
+        - name: backend
+          image: __BACKEND_IMAGE__
+          ports:
+            - containerPort: 8000
+          envFrom:
+            - configMapRef: { name: app-config }
+            - secretRef: { name: app-secrets }
+          readinessProbe:
+            httpGet: { path: /health, port: 8000 }
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            httpGet: { path: /health, port: 8000 }
+            initialDelaySeconds: 20
+            periodSeconds: 20
+          resources:
+            requests: { cpu: "250m", memory: "512Mi" }
+            limits: { memory: "2Gi" }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend
+  namespace: petaledge
+spec:
+  # Static-export frontend calls NEXT_PUBLIC_API_URL directly from the
+  # browser, so the API needs its own external address (not proxied through
+  # the frontend). See docs/CI_CD_SETUP.md for the resulting bootstrap step.
+  type: LoadBalancer
+  selector:
+    app: backend
+  ports:
+    - port: 80
+      targetPort: 8000

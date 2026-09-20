@@ -27,6 +27,7 @@ from app.services.sample_ingest import (
     _extract_metadata,
     _parse_csv_feature_names,
 )
+from app.motion.services import signal_decode
 
 router = APIRouter()
 
@@ -1469,6 +1470,25 @@ def download_sample(
     sample = assert_sample_owner(db, sample_id, current_user)
     url = storage.get_presigned_url(sample.storage_key)
     return {"url": url}
+
+
+@router.get("/{sample_id}/signal")
+def get_sample_signal(
+    sample_id: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Decoded {axes, values, frequency_hz, duration_ms, num_channels,
+    num_samples} for a time-series recording — same decoder Phase 3's window
+    segmentation uses (app/motion/dsp/payloads.py), so this view and training
+    can never disagree on what the stored bytes mean. Powers the frontend's
+    waveform preview and expanded Signal Viewer (sampleSignalCache.ts)."""
+    sample = assert_sample_owner(db, sample_id, current_user)
+    raw_bytes = storage.download_bytes(sample.storage_key)
+    try:
+        return signal_decode.decode(raw_bytes, sample)
+    except signal_decode.SignalDecodeError as exc:
+        raise HTTPException(status_code=422, detail=str(exc))
 
 
 @router.patch("/{sample_id}/label")

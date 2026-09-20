@@ -1,0 +1,23 @@
+# Run once per deploy, before the backend/worker rollout. __BACKEND_IMAGE__
+# and __JOB_SUFFIX__ (short git sha) are substituted by CI — Jobs are
+# immutable, so each deploy needs a uniquely named one.
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: migrate-__JOB_SUFFIX__
+  namespace: petaledge
+spec:
+  backoffLimit: 2
+  ttlSecondsAfterFinished: 3600
+  template:
+    spec:
+      restartPolicy: Never
+      imagePullSecrets:
+        - name: ghcr-pull-secret
+      containers:
+        - name: migrate
+          image: __BACKEND_IMAGE__
+          command: ["alembic", "upgrade", "head"]
+          envFrom:
+            - configMapRef: { name: app-config }
+            - secretRef: { name: app-secrets }

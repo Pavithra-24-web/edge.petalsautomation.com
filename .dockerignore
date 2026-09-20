@@ -1,0 +1,31 @@
+# Backend image build context is the repo root (not backend/) so its
+# Dockerfile can also COPY the sibling unoq/ directory — see backend/Dockerfile.
+# This keeps everything else out of that build context.
+.git
+.github
+.claude
+k8s
+docs
+frontend
+device_client
+Audio Classification
+Motion recognition
+*.pdf
+cmd.txt
+python_device.py
+
+backend/__pycache__
+backend/**/__pycache__
+backend/*.pyc
+backend/.pytest_cache
+backend/tests
+backend/tf_test.py
+backend/scripts
+backend/*.db
+
+unoq/tests
+unoq/**/__pycache__
+
+.env
+.env.*
+!.env.*.example

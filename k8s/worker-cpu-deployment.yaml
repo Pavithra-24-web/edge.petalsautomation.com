@@ -1,0 +1,46 @@
+# CPU Celery worker only — mirrors `make worker-cpu` (see Makefile). The GPU
+# worker (training_gpu queue, --pool=solo, needs a GPU host) is intentionally
+# not deployed here; add it once a GPU node pool exists.
+#
+# __BACKEND_IMAGE__ is replaced by CI with the same image tag used for the
+# backend Deployment — worker and API must run identical code/dependencies.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: worker-cpu
+  namespace: petaledge
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: worker-cpu
+  template:
+    metadata:
+      labels:
+        app: worker-cpu
+    spec:
+      imagePullSecrets:
+        - name: ghcr-pull-secret
+      containers:
+        - name: worker-cpu
+          image: __BACKEND_IMAGE__
+          command:
+            - celery
+            - -A
+            - app.workers.celery_app
+            - worker
+            - -Q
+            - training_cpu,dsp,deployment,post_processing,cpu_default,training
+            - --concurrency=2
+            - --hostname=cpu@%h
+            - -l
+            - info
+          env:
+            - name: WORKER_DEVICE
+              value: "cpu"
+          envFrom:
+            - configMapRef: { name: app-config }
+            - secretRef: { name: app-secrets }
+          resources:
+            requests: { cpu: "250m", memory: "512Mi" }
+            limits: { memory: "2Gi" }

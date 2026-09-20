@@ -1,0 +1,43 @@
+# LOCAL TESTING variant of ../configmap.yaml — uses localhost addresses since
+# you'll reach everything via `kubectl port-forward`, not real external IPs.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  namespace: petaledge
+data:
+  APP_ENV: "development"
+  DEBUG: "true"
+  FAIL_ON_SCHEMA_DRIFT: "true"
+
+  POSTGRES_HOST: "postgres"
+  POSTGRES_PORT: "5432"
+  POSTGRES_DB: "petaledge"
+  POSTGRES_USER: "petaledge"
+
+  REDIS_URL: "redis://redis:6379/0"
+  CELERY_BROKER_URL: "redis://redis:6379/1"
+  CELERY_RESULT_BACKEND: "redis://redis:6379/2"
+
+  S3_ENDPOINT: "http://minio:9000"
+  # Assumes `kubectl port-forward svc/minio 9000:9000` (see docs/LOCAL_KUBERNETES.md).
+  S3_PUBLIC_ENDPOINT: "http://localhost:9000"
+  S3_BUCKET: "petaledge"
+  S3_REGION: "us-east-1"
+
+  JWT_ALGORITHM: "HS256"
+  JWT_EXPIRE_MINUTES: "1440"
+
+  MAX_TRAINING_WORKERS: "2"
+  GPU_ENABLED: "false"
+
+  FRONTEND_URL: "http://localhost:3000"
+  CORS_ORIGINS: '["http://localhost:3000"]'
+
+  GOOGLE_CLIENT_ID: ""
+
+  SMTP_HOST: "smtp.gmail.com"
+  SMTP_PORT: "587"
+  SMTP_FROM: ""
+  DEMO_NOTIFY_EMAIL: ""
+  EMAIL_LOGO_URL: ""

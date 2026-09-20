@@ -1,7 +1,11 @@
 node_modules
 .next
+.next-build
+out
+build.txt
+ref_screenshots
+*.tsbuildinfo
+.env
+.env.*
+!.env.*.example
 .git
-*.log
-npm-debug.log*
-.DS_Store
-Thumbs.db

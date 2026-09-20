@@ -1,5 +1,12 @@
 export type DeviceMode = "idle" | "sampling" | "inference";
 
+// Decoded `sensor.frame` Studio-WS payload (see SignalPreview.tsx). The
+// backend broadcast side (Batch 3.2, app/motion/websocket/sensor_frames.py)
+// isn't wired up yet, so this only covers the field the preview chart reads.
+export interface SensorFramePayload {
+  values: number[];
+}
+
 /** Runtime health snapshot reported on the device heartbeat and merged into
  *  device_metadata.diagnostics. All fields optional — the device omits any it
  *  can't read. */
